@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface Event {
   id: string;
@@ -10,6 +11,8 @@ interface Event {
   speaker: string;
   speakerTitle: string;
   location: string;
+  image: string | null;
+  link: string | null;
 }
 
 export default function EventCard({ events }: { events: Event[] }) {
@@ -21,9 +24,13 @@ export default function EventCard({ events }: { events: Event[] }) {
 
   const event = events[activeIndex];
 
-  return (
-    <div className="relative">
-      <div className="relative w-full max-w-lg overflow-hidden">
+  const card = (
+    <div className="relative w-full max-w-lg overflow-hidden rounded-lg">
+      {event.image ? (
+        <div className="relative aspect-[4/5]">
+          <Image src={event.image} alt={event.titleCn} fill className="object-cover" />
+        </div>
+      ) : (
         <div className="bg-gradient-to-br from-gradient-start via-primary-blue to-gradient-end px-6 py-16 text-center text-white md:px-8 md:py-20 lg:px-14 lg:py-28">
           <div className="pointer-events-none absolute inset-0">
             <svg className="h-full w-full" viewBox="0 0 400 500" fill="none" preserveAspectRatio="none">
@@ -31,7 +38,6 @@ export default function EventCard({ events }: { events: Event[] }) {
               <path d="M0 350 Q200 300, 400 400" stroke="rgba(255,255,255,0.05)" strokeWidth="60" fill="none" />
             </svg>
           </div>
-
           <div className="relative z-10">
             <p className="mb-3 text-lg font-medium md:text-xl">{event.date}</p>
             <h3 className="mb-4 text-2xl font-bold leading-tight md:text-3xl lg:text-4xl">
@@ -45,7 +51,19 @@ export default function EventCard({ events }: { events: Event[] }) {
             <p className="mt-6 text-sm text-white/80 md:text-base">{event.location}</p>
           </div>
         </div>
-      </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="relative">
+      {event.link ? (
+        <a href={event.link} target="_blank" rel="noopener noreferrer" className="block transition-transform hover:scale-[1.02]">
+          {card}
+        </a>
+      ) : (
+        card
+      )}
 
       {events.length > 1 && (
         <div className="mt-6 flex items-center justify-end gap-2">

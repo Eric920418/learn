@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getEventById } from "@/lib/queries/events";
 import { createEvent, updateEvent } from "@/lib/actions/events";
 import { FormField } from "@/components/admin/FormField";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 
 export default async function EventEditPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,8 +31,9 @@ export default async function EventEditPage({ params }: { params: Promise<{ id: 
         <FormField label="主講人" name="speaker" defaultValue={event?.speaker ?? ""} required />
         <FormField label="主講人頭銜" name="speakerTitle" defaultValue={event?.speakerTitle ?? ""} required />
         <FormField label="地點" name="location" defaultValue={event?.location ?? ""} required />
-        <FormField label="活動資訊" name="info" type="textarea" defaultValue={event?.info ?? ""} />
-        <FormField label="配色" name="color" type="select" defaultValue={event?.color ?? "blue"} options={[{ value: "blue", label: "藍色" }, { value: "orange", label: "橘色" }]} />
+        <ImageUpload name="image" currentImage={event?.image} label="活動圖片" />
+        <FormField label="超連結" name="link" defaultValue={event?.link ?? ""} placeholder="https://..." />
+        <FormField label="配色（無圖片時使用）" name="color" type="select" defaultValue={event?.color ?? "blue"} options={[{ value: "blue", label: "藍色" }, { value: "orange", label: "橘色" }]} />
         <FormField label="排序" name="sortOrder" type="number" defaultValue={event?.sortOrder ?? 0} />
         <div className="flex items-center gap-2">
           <input type="checkbox" id="published" name="published" defaultChecked={event?.published ?? true} />

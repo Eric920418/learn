@@ -124,7 +124,7 @@ function PhilosophySection({ goals, visions }: { goals: { id: string; contentEn:
 }
 
 /* --- Events Section --- */
-function EventsSection({ events }: { events: { id: string; date: string; titleCn: string; titleEn: string; speaker: string; speakerTitle: string; location: string }[] }) {
+function EventsSection({ events }: { events: { id: string; date: string; titleCn: string; titleEn: string; speaker: string; speakerTitle: string; location: string; image: string | null; link: string | null }[] }) {
   return (
     <section id="events" className="bg-white py-12 md:py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">

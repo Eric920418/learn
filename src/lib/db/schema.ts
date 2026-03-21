@@ -176,6 +176,8 @@ export const events = pgTable("events", {
   speakerTitle: text("speaker_title").notNull(),
   location: text("location").notNull(),
   info: text("info"),
+  image: text("image"),
+  link: text("link"),
   color: varchar("color", { length: 10 }).default("blue").notNull(),
   published: boolean("published").default(true).notNull(),
   sortOrder: integer("sort_order").notNull().default(0),
