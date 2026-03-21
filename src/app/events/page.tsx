@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getPublishedEvents } from "@/lib/queries/events";
@@ -44,10 +43,11 @@ function EventBlock({ event }: { event: { sectionTitle: string; date: string; ti
   const gradientClass = "from-gradient-start via-primary-blue to-gradient-end";
 
   const card = (
-    <div className="relative w-full max-w-sm overflow-hidden rounded-lg">
+    <div className="relative w-full max-w-2xl overflow-hidden rounded-lg">
       {event.image ? (
-        <div className="relative aspect-[4/5]">
-          <Image src={event.image} alt={event.titleCn} fill className="object-cover" />
+        <div className="relative w-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={event.image} alt={event.titleCn} className="w-full h-auto rounded-lg" />
         </div>
       ) : (
         <div className={`bg-gradient-to-br ${gradientClass} px-6 py-20 text-center text-white md:px-8 md:py-28 lg:px-10 lg:py-36`}>

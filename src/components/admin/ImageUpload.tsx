@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 
 interface ImageUploadProps {
   name: string;
@@ -48,6 +47,7 @@ export function ImageUpload({ name, currentImage, label = "圖片" }: ImageUploa
       }
 
       setUploadedUrl(data.url);
+      setPreview(data.url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "上傳失敗");
       setPreview(currentImage || null);
@@ -62,8 +62,9 @@ export function ImageUpload({ name, currentImage, label = "圖片" }: ImageUploa
       <input type="hidden" name={name} value={uploadedUrl} />
       <div className="flex items-start gap-4">
         {preview && (
-          <div className="relative w-24 h-24 rounded overflow-hidden border">
-            <Image src={preview} alt="preview" fill className="object-cover" />
+          <div className="w-24 h-24 rounded overflow-hidden border">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={preview} alt="preview" className="w-full h-full object-cover" />
           </div>
         )}
         <div>

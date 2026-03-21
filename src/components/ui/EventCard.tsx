@@ -25,10 +25,11 @@ export default function EventCard({ events }: { events: Event[] }) {
   const event = events[activeIndex];
 
   const card = (
-    <div className="relative w-full max-w-lg overflow-hidden rounded-lg">
+    <div className="relative w-full max-w-2xl overflow-hidden rounded-lg">
       {event.image ? (
-        <div className="relative aspect-[4/5]">
-          <Image src={event.image} alt={event.titleCn} fill className="object-cover" />
+        <div className="relative w-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={event.image} alt={event.titleCn} className="w-full h-auto rounded-lg" />
         </div>
       ) : (
         <div className="bg-gradient-to-br from-gradient-start via-primary-blue to-gradient-end px-6 py-16 text-center text-white md:px-8 md:py-20 lg:px-14 lg:py-28">
