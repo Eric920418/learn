@@ -175,7 +175,7 @@ function DirectorsPower({ content }: { content: { contentEn: string | null; cont
     <section className="mx-auto px-6 pb-12 md:px-12 lg:px-24">
       <div className="text-center">
         <h2 className="text-2xl font-black italic text-[#ff8f1e] md:text-3xl lg:text-5xl xl:text-6xl">
-          Directors IS POWER to shape this<br />association
+          Directors ARE POWER to shape this<br />association
         </h2>
         <p className="mt-4 text-xl font-black text-[#ff8f1e] md:text-2xl lg:text-4xl">
           理監事們是塑造這個學會的力量

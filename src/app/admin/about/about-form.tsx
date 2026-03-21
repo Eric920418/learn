@@ -97,7 +97,7 @@ export function AboutForm({
       </div>
 
       <div className="mb-8">
-        <h2 className="text-lg font-bold mb-4">Directors IS POWER</h2>
+        <h2 className="text-lg font-bold mb-4">Directors ARE POWER</h2>
         <form action={async (f) => { const r = await updatePageSection(f); if (r.error) setError(r.error); else router.refresh(); }} className="bg-white p-4 rounded-lg border space-y-3">
           {directorsPowerSection && <input type="hidden" name="id" value={directorsPowerSection.id} />}
           <input type="hidden" name="pageSlug" value="about" />
