@@ -5,6 +5,7 @@ import {
   boolean,
   uuid,
   varchar,
+  integer,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -18,6 +19,7 @@ export const users = pgTable("users", {
   email: text("email").unique().notNull(),
   emailVerified: timestamp("email_verified", { mode: "date" }),
   image: text("image"),
+  password: text("password"),
   role: varchar("role", { length: 20 }).default("user").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
@@ -33,7 +35,7 @@ export const accounts = pgTable("accounts", {
   providerAccountId: text("provider_account_id").notNull(),
   refreshToken: text("refresh_token"),
   accessToken: text("access_token"),
-  expiresAt: timestamp("expires_at", { mode: "date" }),
+  expiresAt: integer("expires_at"),
   tokenType: text("token_type"),
   scope: text("scope"),
   idToken: text("id_token"),
@@ -95,6 +97,121 @@ export const postTags = pgTable("post_tags", {
   tagId: uuid("tag_id")
     .notNull()
     .references(() => tags.id, { onDelete: "cascade" }),
+});
+
+// ============================================
+// CMS 內容表
+// ============================================
+
+export const siteSettings = pgTable("site_settings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  address: text("address").notNull(),
+  tel: text("tel").notNull(),
+  fax: text("fax").notNull(),
+  email: text("email").notNull(),
+  copyrightText: text("copyright_text"),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const heroContent = pgTable("hero_content", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  titleLine1: text("title_line1").notNull(),
+  titleLine2: text("title_line2").notNull(),
+  subtitleCn: text("subtitle_cn").notNull(),
+  subtitleEn: text("subtitle_en").notNull(),
+  announcementText: text("announcement_text"),
+  heroImage: text("hero_image"),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const philosophyItems = pgTable("philosophy_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  category: varchar("category", { length: 20 }).notNull(),
+  contentEn: text("content_en").notNull(),
+  contentCn: text("content_cn").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const boardMembers = pgTable("board_members", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  nameEn: text("name_en").notNull(),
+  titleEn: text("title_en").notNull(),
+  titleCn: text("title_cn").notNull(),
+  image: text("image"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const aboutAims = pgTable("about_aims", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  contentEn: text("content_en").notNull(),
+  contentCn: text("content_cn").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
+export const aboutDirectors = pgTable("about_directors", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  contentEn: text("content_en").notNull(),
+  contentCn: text("content_cn").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
+export const aboutPurposes = pgTable("about_purposes", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  contentEn: text("content_en").notNull(),
+  contentCn: text("content_cn").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
+export const events = pgTable("events", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  sectionTitle: text("section_title").notNull(),
+  date: text("date").notNull(),
+  titleCn: text("title_cn").notNull(),
+  titleEn: text("title_en").notNull(),
+  speaker: text("speaker").notNull(),
+  speakerTitle: text("speaker_title").notNull(),
+  location: text("location").notNull(),
+  info: text("info"),
+  color: varchar("color", { length: 10 }).default("blue").notNull(),
+  published: boolean("published").default(true).notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const associationMembers = pgTable("association_members", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  nameCn: text("name_cn").notNull(),
+  nameEn: text("name_en").notNull(),
+  workplace: text("workplace").notNull(),
+  email: text("email").notNull(),
+  email2: text("email2"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const focusItems = pgTable("focus_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  titleEn: text("title_en").notNull(),
+  titleCn: text("title_cn").notNull(),
+  descEn: text("desc_en").notNull(),
+  descCn: text("desc_cn").notNull(),
+  subItems: text("sub_items"),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
+export const pageSections = pgTable("page_sections", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  pageSlug: varchar("page_slug", { length: 50 }).notNull(),
+  sectionKey: varchar("section_key", { length: 50 }).notNull(),
+  contentEn: text("content_en"),
+  contentCn: text("content_cn"),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
 // ============================================

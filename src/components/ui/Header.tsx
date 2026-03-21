@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
@@ -17,14 +18,17 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* 頂部漸層細線 */}
-      <div className="h-1 bg-gradient-to-r from-primary-blue to-accent-teal" />
-
       <div className="bg-white shadow-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           {/* Logo + 文字 */}
           <Link href="/" className="flex items-center gap-3">
-            <LogoIcon />
+            <Image
+              src="/TISCLLB-web-logo.jpg"
+              alt="TISCLLB Logo"
+              width={44}
+              height={44}
+              className="shrink-0 rounded-full"
+            />
             <div className="leading-tight">
               <p className="text-sm font-bold text-primary-navy">
                 台灣臨床下肢生物力學國際學會
@@ -100,35 +104,3 @@ export default function Header() {
   );
 }
 
-function LogoIcon() {
-  return (
-    <svg
-      width="40"
-      height="40"
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="shrink-0"
-    >
-      <circle cx="20" cy="20" r="19" stroke="#0d2e4d" strokeWidth="1.5" />
-      <circle cx="20" cy="20" r="15" stroke="#2aaa8a" strokeWidth="1" />
-      {/* 簡化的腿骨圖示 */}
-      <path
-        d="M17 8 C17 8, 16 14, 17 18 C18 22, 16 26, 15 32"
-        stroke="#0d2e4d"
-        strokeWidth="1.5"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <path
-        d="M23 8 C23 8, 24 14, 23 18 C22 22, 24 26, 25 32"
-        stroke="#0d2e4d"
-        strokeWidth="1.5"
-        fill="none"
-        strokeLinecap="round"
-      />
-      {/* 膝蓋關節 */}
-      <ellipse cx="20" cy="18" rx="4" ry="2.5" stroke="#2aaa8a" strokeWidth="1" fill="none" />
-    </svg>
-  );
-}

@@ -2,14 +2,17 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-  --primary-navy: #0d2e4d;
-  --primary-blue: #1b4f7a;
-  --accent-teal: #2aaa8a;
-  --gradient-start: #0a2440;
-  --gradient-end: #1b5e8a;
-  --footer-bg: #1a1464;
-  --text-gray: #555555;
+  --foreground: #000000;
+  --primary-navy: #1d2087;
+  --primary-blue: #256f91;
+  --accent-teal: #ff8f1e;
+  --gradient-start: #1d2087;
+  --gradient-end: #256f91;
+  --footer-bg: #1d2087;
+  --text-gray: #000000;
+  --bg-block: rgba(209, 240, 244, 0.28);
+  --subtitle: #256f91;
+  --accent: #ff8f1e;
 }
 
 @theme inline {
@@ -22,6 +25,9 @@
   --color-gradient-end: var(--gradient-end);
   --color-footer-bg: var(--footer-bg);
   --color-text-gray: var(--text-gray);
+  --color-bg-block: var(--bg-block);
+  --color-subtitle: var(--subtitle);
+  --color-accent: var(--accent);
   --font-sans: var(--font-noto-sans-tc);
   --font-mono: var(--font-geist-mono);
 }

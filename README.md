@@ -10,7 +10,8 @@
 | 樣式 | Tailwind CSS v4 |
 | 資料庫 | Neon PostgreSQL (亞洲區域) |
 | ORM | Drizzle ORM |
-| 認證 | NextAuth.js v5 |
+| 認證 | NextAuth.js v5 (Credentials + JWT) |
+| 圖片儲存 | Vercel Blob |
 | 部署 | Vercel (hkg1) |
 
 ## 本地開發
@@ -23,17 +24,21 @@ pnpm install
 
 ### 2. 設定環境變數
 
-複製 `.env.example` 為 `.env.local`，填入你的 Neon 連線字串和 Auth Secret：
+複製 `.env.example` 為 `.env.local`，填入以下變數：
 
-```bash
-cp .env.example .env.local
+```env
+DATABASE_URL=postgresql://...          # Neon PostgreSQL 連線字串
+AUTH_SECRET=xxx                        # NextAuth 密鑰 (openssl rand -base64 32)
+AUTH_URL=http://localhost:3000         # 開發環境
+BLOB_READ_WRITE_TOKEN=xxx             # Vercel Blob token (部署時需要)
 ```
 
-### 3. 資料庫遷移
+### 3. 資料庫設定
 
 ```bash
 pnpm db:generate   # 生成遷移檔案
-pnpm db:migrate    # 執行遷移
+pnpm db:push       # 推送 schema 到資料庫
+pnpm db:seed       # 填入初始資料（含 admin 帳號）
 pnpm db:studio     # 開啟 Drizzle Studio（瀏覽資料庫）
 ```
 
@@ -45,60 +50,109 @@ pnpm dev
 
 開啟 [http://localhost:3000](http://localhost:3000) 查看結果。
 
+## CMS 後台管理
+
+### 登入
+
+訪問 `/admin/login`，使用以下預設帳號：
+
+- **Email**: admin@tiscllb.org
+- **密碼**: admin123
+
+> 請在部署後立即修改密碼。
+
+### 後台功能
+
+| 路徑 | 功能 |
+|------|------|
+| `/admin` | Dashboard 總覽 |
+| `/admin/hero` | 編輯首頁 Hero 區塊（文字、圖片） |
+| `/admin/philosophy` | 管理倡導理念條目（目標/願景 CRUD） |
+| `/admin/events` | 活動管理（新增/編輯/刪除/發布） |
+| `/admin/board-members` | 組織成員管理（含照片上傳） |
+| `/admin/members` | 會員名單管理 |
+| `/admin/about` | 關於本會各區塊（Aims/Directors/Purposes/引言） |
+| `/admin/recruit` | 招募會員頁面內容 |
+| `/admin/blog` | Blog 文章/分類/標籤管理 |
+| `/admin/settings` | 全站設定（聯絡資訊、版權文字） |
+
+### 內容架構
+
+所有前台頁面內容由資料庫驅動，透過後台即可動態更新：
+
+- **單行表**：全站設定 (site_settings)、首頁 Hero (hero_content)
+- **列表表**：倡導理念、組織成員、會員、活動、Aims、Directors、Purposes、Focus Items
+- **通用文字區塊**：page_sections（研討會文字、研發文字、領導力引言等）
+- **Blog 系統**：文章、分類、標籤
+
 ## 專案結構
 
 ```
 src/
-├── app/                  # Next.js App Router
-│   ├── api/auth/         # NextAuth API routes
-│   ├── events/           # 活動訊息獨立頁面
-│   ├── blog/             # 部落格頁面
-│   ├── admin/            # 後台管理（受保護）
-│   ├── layout.tsx        # Root layout (Noto Sans TC 字體)
-│   └── globals.css       # Tailwind v4 主題色彩系統
-├── components/ui/        # UI 元件
-│   ├── Header.tsx        # 頂部導覽列
-│   ├── Footer.tsx        # 頁尾
-│   └── EventCard.tsx     # 活動卡片輪播
+├── app/
+│   ├── (admin-auth)/admin/login/  # 登入頁（不受 admin layout 保護）
+│   ├── admin/                      # 後台管理（受 auth guard 保護）
+│   │   ├── layout.tsx              # Admin layout + sidebar
+│   │   ├── hero/                   # Hero 編輯
+│   │   ├── philosophy/             # 倡導理念 CRUD
+│   │   ├── events/                 # 活動 CRUD
+│   │   ├── board-members/          # 組織成員 CRUD
+│   │   ├── members/                # 會員 CRUD
+│   │   ├── about/                  # About 各區塊
+│   │   ├── recruit/                # 招募頁面內容
+│   │   ├── blog/                   # Blog 管理
+│   │   └── settings/               # 全站設定
+│   ├── api/
+│   │   ├── auth/[...nextauth]/     # NextAuth API
+│   │   └── upload/                 # 圖片上傳 API (Vercel Blob)
+│   ├── about/                      # 關於本會
+│   ├── blog/                       # Blog 前台
+│   ├── contact/                    # 聯絡我們
+│   ├── events/                     # 活動訊息
+│   ├── members/                    # 會員名單
+│   ├── philosophy/                 # 倡導理念
+│   ├── recruit/                    # 招募會員
+│   └── page.tsx                    # 首頁
+├── components/
+│   ├── admin/                      # 後台共用組件
+│   │   ├── Sidebar.tsx
+│   │   ├── AdminHeader.tsx
+│   │   ├── FormField.tsx
+│   │   ├── BilingualField.tsx
+│   │   ├── ImageUpload.tsx
+│   │   ├── SubmitButton.tsx
+│   │   ├── DeleteButton.tsx
+│   │   └── ErrorDisplay.tsx
+│   └── ui/                         # 前台 UI 組件
+│       ├── Header.tsx
+│       ├── Footer.tsx
+│       └── EventCard.tsx
 ├── lib/
-│   ├── db/               # Drizzle ORM + Neon 設定
-│   └── utils.ts          # cn() 工具函數
-├── types/                # TypeScript 類型定義
-├── auth.ts               # NextAuth 主配置
-└── proxy.ts              # Next.js 16 session 代理
+│   ├── actions/                    # Server Actions (CRUD)
+│   ├── queries/                    # 資料查詢函數
+│   └── db/
+│       ├── schema.ts               # Drizzle ORM schema (19 張表)
+│       ├── index.ts                 # DB 連線
+│       └── seed.ts                  # 初始資料
+├── types/index.ts                   # TypeScript 類型擴展
+└── auth.ts                          # NextAuth 配置
 ```
 
 ## 頁面
 
-### 首頁 (`/`)
-1. **Header** — 學會 Logo + 導覽列
-2. **Hero** — 歡迎加入 TISCLLB + 醫療影像背景
-3. **倡導理念** — 目標 + 願景
-4. **活動訊息** — 活動卡片輪播
-5. **Footer** — 聯絡資訊 + 導覽連結
+### 前台
 
-### 活動訊息 (`/events`)
-- 大標題 TISCLLB + 活動訊息
-- 多個活動區塊（藍色/橘色漸層卡片 + 活動資訊文字）
-
-### 招募會員 (`/recruit`)
-- 大標題 TISCLLB + 招募會員
-- 五大重點：Networking、Leadership Skills、Professional Development、Partner Programs、Business Growth
-- 研討會及繼續教育（圖文交錯）
-- 研究與發展
-
-### 關於本會 (`/about`)
-- 本會簡介 + Our Values 圓形圖
-- Our Aim 我們的目標 + 國際網絡圖
-- 本會章程（Why Have Directors、領導力引言、學會目的）
-- 組織成員（第一屆理監事照片格）
-
-### 倡導理念 (`/philosophy`)
-- 與首頁倡導理念區塊一致（目標 + 願景）
-
-### 會員名單 (`/members`)
-- 大標題 TISCLLB + 會員名單
-- 20 位會員表格（姓名中英文 + 工作單位 + Email）
+| 路徑 | 內容 |
+|------|------|
+| `/` | Hero + 倡導理念 + 活動輪播 |
+| `/about` | 本會簡介 + 組織成員 + 章程 |
+| `/philosophy` | 倡導理念（目標 + 願景） |
+| `/events` | 活動列表 |
+| `/members` | 會員名單表格 |
+| `/recruit` | 招募會員 + 研討會 + 研發 |
+| `/contact` | 聯絡資訊 |
+| `/blog` | 文章列表 |
+| `/blog/[slug]` | 文章內頁 |
 
 ## 響應式設計 (RWD)
 
@@ -106,17 +160,17 @@ src/
 
 | 斷點 | 寬度 | 說明 |
 |------|------|------|
-| 預設 | < 640px | 手機（iPhone SE ~ iPhone 14） |
+| 預設 | < 640px | 手機 |
 | `sm:` | ≥ 640px | 大手機 / 小平板 |
-| `md:` | ≥ 768px | 平板（iPad portrait） |
-| `lg:` | ≥ 1024px | 筆電 / iPad landscape |
+| `md:` | ≥ 768px | 平板 |
+| `lg:` | ≥ 1024px | 筆電 |
 | `xl:` | ≥ 1280px | 桌面 |
-
-- Header 在 `lg:` 以下自動切換為漢堡選單，極小螢幕（< 640px）隱藏英文副標題
-- 所有頁面標題、內容 padding、文字大小在各斷點間平滑過渡
-- 招募會員頁 Business Growth 三欄在手機自動堆疊為單欄
-- 會員名單表格文字在手機端自動縮小以保持可讀性
 
 ## 部署
 
-專案配置為部署到 Vercel 香港區域 (hkg1)。Push 到 GitHub 後連接 Vercel 即可自動部署。
+專案配置為部署到 Vercel 香港區域 (hkg1)。需要在 Vercel 設定以下環境變數：
+
+- `DATABASE_URL` — Neon PostgreSQL 連線字串
+- `AUTH_SECRET` — NextAuth 密鑰
+- `AUTH_URL` — 正式網域 (例: https://tiscllb.org)
+- `BLOB_READ_WRITE_TOKEN` — Vercel Blob 儲存 token

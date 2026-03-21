@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getSiteSettings } from "@/lib/queries/settings";
 
 const navLinks = [
   { label: "關於本會", href: "/about" },
@@ -9,24 +10,29 @@ const navLinks = [
   { label: "聯絡我們", href: "/contact" },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const settings = await getSiteSettings();
+
+  const address = settings?.address ?? "10487台北市中山區復興北路154號5樓";
+  const tel = settings?.tel ?? "02-2717-0031";
+  const fax = settings?.fax ?? "02-2718-1243";
+  const email = settings?.email ?? "twn.globe@gmail.com";
+  const copyright = settings?.copyrightText ?? "Copyright © 台灣臨床下肢生物力學國際學會";
+
   return (
     <footer id="contact">
-      {/* 頂部青綠色細線 */}
       <div className="h-0.5 bg-accent-teal" />
 
       <div className="bg-footer-bg text-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 md:flex-row md:items-start md:justify-between">
-          {/* 左側：聯絡資訊 */}
           <div className="text-sm leading-relaxed text-white/80">
-            <p>會址:10487台北市中山區復興北路154號5樓</p>
+            <p>會址:{address}</p>
             <p>
-              Tel:02-2717-0031 &nbsp; Fax:02-2718-1243
+              Tel:{tel} &nbsp; Fax:{fax}
             </p>
-            <p>E-mail: twn.globe@gmail.com</p>
+            <p>E-mail: {email}</p>
           </div>
 
-          {/* 右側：導覽 + 版權 */}
           <div className="text-right">
             <nav className="mb-4 flex flex-wrap gap-4 text-sm text-white/80 md:justify-end">
               {navLinks.map((link) => (
@@ -39,9 +45,7 @@ export default function Footer() {
                 </Link>
               ))}
             </nav>
-            <p className="text-xs text-white/60">
-              Copyright © 台灣臨床下肢生物力學國際學會
-            </p>
+            <p className="text-xs text-white/60">{copyright}</p>
           </div>
         </div>
       </div>
