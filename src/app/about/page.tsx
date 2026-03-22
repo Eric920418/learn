@@ -150,7 +150,7 @@ function LeadershipQuote({ content }: { content: { contentEn: string | null; con
       part === "LEADERSHIP" ? (
         <span key={i} className="relative inline-block">
           {part}
-          <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[5px] bg-[#ff8f1e]" />
+          <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[8px] bg-[#ff8f1e]" />
         </span>
       ) : (
         <span key={i}>{part}</span>
@@ -164,7 +164,7 @@ function LeadershipQuote({ content }: { content: { contentEn: string | null; con
       part === "專業的領導力" ? (
         <span key={i} className="relative inline-block">
           {part}
-          <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[5px] bg-[#ff8f1e]" />
+          <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[8px] bg-[#ff8f1e]" />
         </span>
       ) : (
         <span key={i}>{part}</span>
