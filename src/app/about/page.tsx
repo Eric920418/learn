@@ -14,7 +14,6 @@ export default async function AboutPage() {
     getPageSections("about"),
   ]);
 
-  const leadershipQuote = sections.find(s => s.sectionKey === "leadership_quote");
   const directorsPower = sections.find(s => s.sectionKey === "directors_power");
 
   return (
@@ -27,7 +26,7 @@ export default async function AboutPage() {
         <AimSection aims={aims} />
         <CharterHeader />
         <DirectorsSection directors={directors} />
-        <LeadershipQuote content={leadershipQuote} />
+        <LeadershipQuote />
         <AssociationPurpose purposes={purposes} />
         <DirectorsPower content={directorsPower} />
         <BoardMembersSection members={boardMembersList} />
@@ -140,50 +139,30 @@ function DirectorBullet({ en, zh }: { en: string; zh: string }) {
   );
 }
 
-function LeadershipQuote({ content }: { content: { contentEn: string | null; contentCn: string | null } | undefined }) {
-  const enText = content?.contentEn || "For most practitioners, creating professional LEADERSHIP is important";
-  const cnText = content?.contentCn || "對於大多數從業者來說 建立專業的領導力很重要";
-
-  const renderEnglish = (text: string) => {
-    const parts = text.split(/(LEADERSHIP)/);
-    return parts.map((part, i) =>
-      part === "LEADERSHIP" ? (
-        <span key={i} className="relative inline-block">
-          {part}
-          <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[8px] bg-[#ff8f1e]" />
-        </span>
-      ) : (
-        <span key={i}>{part}</span>
-      )
-    );
-  };
-
-  const renderChinese = (text: string) => {
-    const parts = text.split(/(專業的領導力)/);
-    return parts.map((part, i) =>
-      part === "專業的領導力" ? (
-        <span key={i} className="relative inline-block">
-          {part}
-          <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[8px] bg-[#ff8f1e]" />
-        </span>
-      ) : (
-        <span key={i}>{part}</span>
-      )
-    );
-  };
-
+function LeadershipQuote() {
   return (
     <section className="mx-auto px-6 py-12 md:px-12 lg:px-16 bg-bg-block">
-      <div className="relative    ">
+      <div className="relative">
         <div className="max-w-xl me-auto">
-          <span className="absolute left-[-40px] top-[40px] text-4xl leading-none text-[#1d2087] md:left-[-80px] md:top-[30px] md:text-6xl lg:left-[-100px] lg:top-[30px] ">
+          <span className="absolute left-[-40px] top-[40px] text-4xl leading-none text-[#1d2087] md:left-[-80px] md:top-[30px] md:text-6xl lg:left-[-100px] lg:top-[30px]">
             ▶
           </span>
           <h2 className="text-2xl font-bold md:font-black italic leading-snug text-[#1d2087] lg:text-3xl xl:text-4xl">
-            {renderEnglish(enText)}
+            For most practitioners, creating professional{" "}
+            <span className="relative inline-block">
+              LEADERSHIP
+              <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[8px] bg-[#ff8f1e]" />
+            </span>{" "}
+            is important
           </h2>
           <p className="mt-4 text-xl font-bold text-[#1d2087] lg:text-2xl leading-relaxed">
-            {renderChinese(cnText)}
+            對於大多數從業者來說<br className="md:hidden" />
+            {" "}建立
+            <span className="relative inline-block">
+              專業的領導力
+              <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[8px] bg-[#ff8f1e]" />
+            </span>
+            很重要
           </p>
         </div>
       </div>

@@ -4,7 +4,6 @@ config({ path: ".env.local" });
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { associationMembers } from "./schema";
-import { eq } from "drizzle-orm";
 
 const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql);
@@ -20,7 +19,10 @@ const members = [
   { sortOrder: 8, nameCn: "葉怡嘉", nameEn: "Dr. Yeh Yi-Chia", workplace: "童綜合醫院-復健科", email: "yeheca@yahoo.com.tw" },
   { sortOrder: 9, nameCn: "陳昱傑", nameEn: "Dr. Chen Yu-Chieh", workplace: "陳昱傑骨科診所", email: "nouischen@gmail.com" },
   { sortOrder: 10, nameCn: "卓宗成", nameEn: "Zhou Zong-Cheng", workplace: "卓立物理治療所", email: "jow.aaron@msa.hinet.net" },
-  { sortOrder: 11, nameCn: "王憲忠", nameEn: "Dr. Wang Hsien-Chung", workplace: "王憲忠骨科診所", email: "enrac_hcwae@gmail.com" },
+  { sortOrder: 11, nameCn: "王憲忠", nameEn: "Dr. Wang Hsien-Chung", workplace: "王憲忠骨科診所", email: "enrac_hcwang@yahoo.com.tw" },
+  { sortOrder: 12, nameCn: "許民華", nameEn: "Hsu Ming Hua", workplace: "新安物理治療所", email: "hsu_ming_hua@yahoo.com.tw" },
+  { sortOrder: 13, nameCn: "龔洧萱", nameEn: "Kung Wei-Hsuan", workplace: "共和復健科診所", email: "weikung@yahoo.com", email2: "allywkung@yahoo.com.tw" },
+  { sortOrder: 14, nameCn: "林東亮", nameEn: "Dr. Lin Tung-Liang", workplace: "臺中榮民總醫院-復健科", email: "safetymarginescape@gmail.com" },
   { sortOrder: 15, nameCn: "王介山", nameEn: "Dr.Wang, Chieh-Shan", workplace: "王介山骨科外科診所", email: "wang.cs33@msa.hinet.net" },
   { sortOrder: 16, nameCn: "邱谹益", nameEn: "Hong-Yi Chiu", workplace: "以馬內利復健科神經科診所", email: "maxwell715666@gmail.com" },
   { sortOrder: 17, nameCn: "梁福民", nameEn: "Dr.Louis Fukman-Leung", workplace: "仁愛國泰醫院－骨科", email: "lfmleung@gmail.com" },
@@ -31,7 +33,11 @@ const members = [
   { sortOrder: 22, nameCn: "黃文奇", nameEn: "Dr.Huang Wen-Chi", workplace: "毅嘉骨科診所", email: "wchuang9575038@yahoo.com.tw" },
   { sortOrder: 23, nameCn: "吳湧", nameEn: "Jack Junior Wu", workplace: "CURVES台灣總部 首席運動研發顧問", email: "jackjrwu@me.com" },
   { sortOrder: 24, nameCn: "侯博仁", nameEn: "Hou Po-Jen", workplace: "博證物理治療所", email: "bowrain@gmail.com" },
-  { sortOrder: 25, nameCn: "林殿閔", nameEn: "Dr.Lin,Dian-Min", workplace: "敏盛醫院經國院區-骨科", email: "flower77411@gmail.com" },
+  { sortOrder: 25, nameCn: "林殿閔", nameEn: "Dr.Lin,Dian-Min", workplace: "敏盛醫院經國院區-骨科", email: "bricelin817@gmail.com" },
+  { sortOrder: 26, nameCn: "姚智國", nameEn: "Dr.Yao, Chih-Kuo", workplace: "俐捷骨科診所", email: "dartagnangkevin@gmail.com" },
+  { sortOrder: 27, nameCn: "林順智", nameEn: "Dr. Lin Shun-Chih", workplace: "高銘骨外科診所", email: "santonini1757@gmail.com" },
+  { sortOrder: 28, nameCn: "黃宇", nameEn: "Huang Yu", workplace: "", email: "lraynerch61@gmail.com" },
+  { sortOrder: 29, nameCn: "游浚弘", nameEn: "Dr.Yu Chun-Hung", workplace: "駿品物理治療所", email: "smallflower77411@gmail.com" },
   { sortOrder: 30, nameCn: "凃富籌", nameEn: "Dr.Twu Fuh-Chour", workplace: "凃富籌復健診所", email: "twu.chh@msa.hinet.net" },
   { sortOrder: 31, nameCn: "陳奕丞", nameEn: "Chen Yi-Cheng", workplace: "小海獺居家職能治療所", email: "eagle72130steven@gmail.com" },
   { sortOrder: 32, nameCn: "劉昱呈", nameEn: "Dr.Liu Yu-Cheng", workplace: "昱安中醫診所", email: "mimic30835@gmail.com" },
@@ -45,28 +51,12 @@ const members = [
 ];
 
 async function seedMembers() {
-  let inserted = 0;
-  let skipped = 0;
+  await db.delete(associationMembers);
+  console.log("已清空所有會員資料");
 
-  for (const member of members) {
-    const existing = await db
-      .select({ id: associationMembers.id })
-      .from(associationMembers)
-      .where(eq(associationMembers.email, member.email))
-      .limit(1);
+  await db.insert(associationMembers).values(members);
+  console.log(`已匯入 ${members.length} 位會員`);
 
-    if (existing.length > 0) {
-      console.log(`跳過 (已存在): ${member.nameCn || member.nameEn} - ${member.email}`);
-      skipped++;
-      continue;
-    }
-
-    await db.insert(associationMembers).values(member);
-    console.log(`新增: ${member.nameCn || member.nameEn} - ${member.email}`);
-    inserted++;
-  }
-
-  console.log(`\n完成！新增 ${inserted} 筆，跳過 ${skipped} 筆重複`);
   process.exit(0);
 }
 
