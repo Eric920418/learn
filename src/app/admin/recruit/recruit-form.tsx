@@ -7,6 +7,7 @@ import { FormField } from "@/components/admin/FormField";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { ErrorDisplay } from "@/components/admin/ErrorDisplay";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { createFocusItem, updateFocusItem, deleteFocusItem } from "@/lib/actions/recruit";
 import { updatePageSection } from "@/lib/actions/about";
 
@@ -23,6 +24,10 @@ export function RecruitForm({ focusItems, sections }: { focusItems: FocusItem[];
 
   const seminarsSection = sections.find(s => s.sectionKey === "seminars_text");
   const researchSection = sections.find(s => s.sectionKey === "research_text");
+  const seminarsImg1 = sections.find(s => s.sectionKey === "seminars_img1");
+  const seminarsImg2 = sections.find(s => s.sectionKey === "seminars_img2");
+  const seminarsImg3 = sections.find(s => s.sectionKey === "seminars_img3");
+  const seminarsImg4 = sections.find(s => s.sectionKey === "seminars_img4");
 
   return (
     <div>
@@ -72,6 +77,28 @@ export function RecruitForm({ focusItems, sections }: { focusItems: FocusItem[];
           <BilingualField label="研討會內容" nameEn="contentEn" nameCn="contentCn" defaultValueEn={seminarsSection?.contentEn ?? ""} defaultValueCn={seminarsSection?.contentCn ?? ""} type="textarea" />
           <SubmitButton />
         </form>
+      </div>
+
+      {/* Seminars Images */}
+      <div className="mb-8">
+        <h2 className="text-lg font-bold mb-4">研討會及繼續教育 圖片</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { label: "上排左圖", key: "seminars_img1", data: seminarsImg1 },
+            { label: "上排右圖", key: "seminars_img2", data: seminarsImg2 },
+            { label: "下排左圖", key: "seminars_img3", data: seminarsImg3 },
+            { label: "下排右圖", key: "seminars_img4", data: seminarsImg4 },
+          ].map((item) => (
+            <form key={item.key} action={async (f) => { const r = await updatePageSection(f); if (r.error) setError(r.error); else router.refresh(); }} className="bg-white p-4 rounded-lg border space-y-3">
+              {item.data && <input type="hidden" name="id" value={item.data.id} />}
+              <input type="hidden" name="pageSlug" value="recruit" />
+              <input type="hidden" name="sectionKey" value={item.key} />
+              <ImageUpload name="contentEn" currentImage={item.data?.contentEn} label={item.label} />
+              <input type="hidden" name="contentCn" value="" />
+              <SubmitButton label="儲存" />
+            </form>
+          ))}
+        </div>
       </div>
 
       {/* Research Section */}

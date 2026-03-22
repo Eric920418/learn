@@ -11,6 +11,12 @@ export default async function RecruitPage() {
 
   const seminarsSection = sections.find(s => s.sectionKey === "seminars_text");
   const researchSection = sections.find(s => s.sectionKey === "research_text");
+  const seminarsImages = {
+    img1: sections.find(s => s.sectionKey === "seminars_img1")?.contentEn || null,
+    img2: sections.find(s => s.sectionKey === "seminars_img2")?.contentEn || null,
+    img3: sections.find(s => s.sectionKey === "seminars_img3")?.contentEn || null,
+    img4: sections.find(s => s.sectionKey === "seminars_img4")?.contentEn || null,
+  };
 
   return (
     <>
@@ -18,7 +24,7 @@ export default async function RecruitPage() {
       <main className="bg-white">
         <PageTitle />
         <FocusSection items={focusItemsList} />
-        <SeminarsSection content={seminarsSection} />
+        <SeminarsSection content={seminarsSection} images={seminarsImages} />
         <ResearchSection content={researchSection} />
       </main>
       <Footer />
@@ -96,7 +102,7 @@ function FocusSection({ items }: { items: { id: string; titleEn: string; titleCn
   );
 }
 
-function SeminarsSection({ content }: { content: { contentEn: string | null; contentCn: string | null } | undefined }) {
+function SeminarsSection({ content, images }: { content: { contentEn: string | null; contentCn: string | null } | undefined; images: { img1: string | null; img2: string | null; img3: string | null; img4: string | null } }) {
   const textEn1 = content?.contentEn?.split("|||")[0] ?? "Continual education is important in professional growth and our website will inform our members of all the courses available.";
   const textCn1 = content?.contentCn?.split("|||")[0] ?? "繼續教育在專業成長中很重要，我們會於網站告知我會員所有可用的課程。";
   const textEn2 = content?.contentEn?.split("|||")[1] ?? "This also gives our members opportunity to advertise and pass knowledge to other members. The courses will need to relate to clinical biomechanical training.";
@@ -114,8 +120,8 @@ function SeminarsSection({ content }: { content: { contentEn: string | null; con
       </div>
 
       <div className="-mx-6 mb-12 grid grid-cols-1 gap-3 md:-mx-12 md:grid-cols-3 lg:-mx-24">
-        <ImagePlaceholder />
-        <ImagePlaceholder />
+        <ImagePlaceholder src={images.img1} />
+        <ImagePlaceholder src={images.img2} />
         <div className="p-6 lg:p-8">
           <p className="text-sm leading-relaxed text-foreground">
             <span className="mr-1 inline-block text-lg text-[#1d2087]">▶</span>
@@ -133,14 +139,22 @@ function SeminarsSection({ content }: { content: { contentEn: string | null; con
           </p>
           <p className="mt-3 text-sm font-bold leading-relaxed text-foreground">{textCn2}</p>
         </div>
-        <ImagePlaceholder />
-        <ImagePlaceholder />
+        <ImagePlaceholder src={images.img3} />
+        <ImagePlaceholder src={images.img4} />
       </div>
     </section>
   );
 }
 
-function ImagePlaceholder() {
+function ImagePlaceholder({ src }: { src?: string | null }) {
+  if (src) {
+    return (
+      <div className="overflow-hidden aspect-[4/3]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt="" className="w-full h-full object-cover" />
+      </div>
+    );
+  }
   return (
     <div className="flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#d1f0f4] to-[#d1f0f4] aspect-[4/3]">
       <svg className="h-10 w-10 text-primary-navy/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>

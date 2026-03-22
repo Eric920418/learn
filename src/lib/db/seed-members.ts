@@ -1,6 +1,13 @@
-import { db } from "./index";
+import { config } from "dotenv";
+config({ path: ".env.local" });
+
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
 import { associationMembers } from "./schema";
 import { eq } from "drizzle-orm";
+
+const sql = neon(process.env.DATABASE_URL!);
+const db = drizzle(sql);
 
 const members = [
   { sortOrder: 1, nameCn: "高國峯", nameEn: "Dr. Kao Kuo-Feng", workplace: "高國峯骨科診所", email: "rolyfeng@gmail.com" },
@@ -42,7 +49,6 @@ async function seedMembers() {
   let skipped = 0;
 
   for (const member of members) {
-    // 用 email 檢查是否已存在
     const existing = await db
       .select({ id: associationMembers.id })
       .from(associationMembers)
