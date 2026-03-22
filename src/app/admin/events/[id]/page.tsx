@@ -24,13 +24,14 @@ export default async function EventEditPage({ params }: { params: Promise<{ id: 
       <h1 className="text-2xl font-bold mb-6">{isNew ? "新增活動" : "編輯活動"}</h1>
       <form action={handleAction} className="max-w-2xl space-y-4 bg-white p-6 rounded-lg border">
         {!isNew && <input type="hidden" name="id" value={id} />}
-        <FormField label="區塊標題" name="sectionTitle" defaultValue={event?.sectionTitle ?? ""} required />
-        <FormField label="日期" name="date" defaultValue={event?.date ?? ""} required placeholder="例: 12月26-27日" />
-        <FormField label="活動名稱（中文）" name="titleCn" defaultValue={event?.titleCn ?? ""} required />
-        <FormField label="活動名稱（英文）" name="titleEn" defaultValue={event?.titleEn ?? ""} required />
-        <FormField label="主講人" name="speaker" defaultValue={event?.speaker ?? ""} required />
-        <FormField label="主講人頭銜" name="speakerTitle" defaultValue={event?.speakerTitle ?? ""} required />
-        <FormField label="地點" name="location" defaultValue={event?.location ?? ""} required />
+        <FormField label="區塊標題" name="sectionTitle" defaultValue={event?.sectionTitle ?? ""} />
+        <FormField label="日期" name="date" defaultValue={event?.date ?? ""} placeholder="例: 12月26-27日" />
+        <FormField label="活動名稱（中文）" name="titleCn" defaultValue={event?.titleCn ?? ""} />
+        <FormField label="活動名稱（英文）" name="titleEn" defaultValue={event?.titleEn ?? ""} />
+        <FormField label="主講人" name="speaker" defaultValue={event?.speaker ?? ""} />
+        <FormField label="主講人頭銜" name="speakerTitle" defaultValue={event?.speakerTitle ?? ""} />
+        <FormField label="地點" name="location" defaultValue={event?.location ?? ""} />
+        <FormField label="活動內容" name="info" type="textarea" defaultValue={event?.info ?? ""} />
         <ImageUpload name="image" currentImage={event?.image} label="活動圖片" />
         <FormField label="超連結" name="link" defaultValue={event?.link ?? ""} placeholder="https://..." />
         <FormField label="配色（無圖片時使用）" name="color" type="select" defaultValue={event?.color ?? "blue"} options={[{ value: "blue", label: "藍色" }, { value: "orange", label: "橘色" }]} />
