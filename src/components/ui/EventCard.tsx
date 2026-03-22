@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import EventInfoModal from "./EventInfoModal";
 
 interface Event {
   id: string;
@@ -11,6 +12,7 @@ interface Event {
   speaker: string;
   speakerTitle: string;
   location: string;
+  info: string | null;
   image: string | null;
   link: string | null;
 }
@@ -50,6 +52,7 @@ export default function EventCard({ events }: { events: Event[] }) {
             <p className="mb-2 text-sm md:text-base">{event.speaker}</p>
             <p className="mb-2 text-sm text-white/80 md:text-base">{event.speakerTitle}</p>
             <p className="mt-6 text-sm text-white/80 md:text-base">{event.location}</p>
+            {event.info && <EventInfoModal info={event.info} titleCn={event.titleCn} />}
           </div>
         </div>
       )}

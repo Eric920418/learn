@@ -1,5 +1,6 @@
 import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
+import EventInfoModal from "@/components/ui/EventInfoModal";
 import { getPublishedEvents } from "@/lib/queries/events";
 
 export default async function EventsPage() {
@@ -39,7 +40,7 @@ export default async function EventsPage() {
   );
 }
 
-function EventBlock({ event }: { event: { sectionTitle: string; date: string; titleCn: string; titleEn: string; speaker: string; speakerTitle: string; location: string; image: string | null; link: string | null; } }) {
+function EventBlock({ event }: { event: { sectionTitle: string; date: string; titleCn: string; titleEn: string; speaker: string; speakerTitle: string; location: string; info: string | null; image: string | null; link: string | null; } }) {
   const gradientClass = "from-gradient-start via-primary-blue to-gradient-end";
 
   const card = (
@@ -68,6 +69,7 @@ function EventBlock({ event }: { event: { sectionTitle: string; date: string; ti
             <p className="mb-2 text-base">{event.speaker}</p>
             <p className="mb-2 text-base text-white/80">{event.speakerTitle}</p>
             <p className="mt-6 text-base text-white/80">{event.location}</p>
+            {event.info && <EventInfoModal info={event.info} titleCn={event.titleCn} />}
           </div>
         </div>
       )}
