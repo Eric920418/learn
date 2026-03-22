@@ -10,8 +10,8 @@ export default async function EventsPage() {
       <Header />
       <main className="bg-white">
         {/* 頁面大標題 */}
-        <section className="pb-20 pt-20 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
-          <h1 className="text-4xl font-black tracking-[0.15em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
+        <section className="pb-12 pt-12 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
+          <h1 className="text-4xl font-bold md:font-black tracking-[0.15em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
             TISCLLB
           </h1>
           <div className="mx-auto mt-4 inline-flex flex-col items-center">
@@ -77,12 +77,11 @@ function EventBlock({ event }: { event: { sectionTitle: string; date: string; ti
   return (
     <div>
       <h3
-        className="text-xl font-[900] text-[#1d2087] md:text-2xl lg:text-3xl"
-        style={{ WebkitTextStroke: "0.5px #1d2087" }}
+        className="text-xl font-bold md:font-[900] text-[#1d2087] md:text-2xl lg:text-3xl text-stroke-navy-light"
       >
         {event.sectionTitle}
       </h3>
-      <div className="mt-3 mb-8 h-[2px] w-1/3 bg-[#1d2087]" />
+      <div className="mt-2 lg:mt-4 mb-8 h-[2px] w-1/2 bg-[#1d2087]" />
 
       <div className="flex justify-center">
         {event.link ? (

@@ -12,8 +12,8 @@ export default async function PhilosophyPage() {
       <Header />
       <main className="bg-white">
         {/* 頁面大標題 */}
-        <section className="pb-20 pt-20 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
-          <h1 className="text-3xl font-black tracking-[0.15em] text-primary-navy md:text-5xl lg:text-7xl xl:text-8xl">
+        <section className="pb-12 pt-12 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
+          <h1 className="text-3xl font-bold md:font-black tracking-[0.15em] text-primary-navy md:text-5xl lg:text-7xl xl:text-8xl">
             TISCLLB
           </h1>
           <div className="mx-auto mt-4 flex items-center justify-center gap-4">
@@ -35,7 +35,7 @@ export default async function PhilosophyPage() {
               <div className="mt-4 ml-auto h-[1px] w-1/2 bg-primary-navy/30" />
             </div>
 
-            <div className="pl-6 lg:pl-10">
+            <div className="">
               {/* 目標 */}
               <div className="mb-14">
                 <h3 className="mb-6 text-xl font-bold tracking-[0.2em] text-[#256f91] lg:text-2xl">

@@ -14,7 +14,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <Header />
       <main className="bg-white">
         <article className="mx-auto max-w-3xl px-6 py-16 md:py-24">
-          <h1 className="text-3xl font-black text-[#1d2087] mb-4 md:text-4xl">{post.title}</h1>
+          <h1 className="text-3xl font-bold md:font-black text-[#1d2087] mb-4 md:text-4xl">{post.title}</h1>
           <p className="text-sm text-gray-400 mb-8">{new Date(post.createdAt).toLocaleDateString("zh-TW")}</p>
           {post.content && (
             <div className="prose prose-lg max-w-none whitespace-pre-wrap text-foreground">

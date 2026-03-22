@@ -28,8 +28,8 @@ export default async function RecruitPage() {
 
 function PageTitle() {
   return (
-    <section className="pb-20 pt-20 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
-      <h1 className="text-4xl font-black tracking-[0.15em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
+    <section className="pb-12 pt-12 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
+      <h1 className="text-4xl font-bold md:font-black tracking-[0.15em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
         TISCLLB
       </h1>
       <div className="mx-auto mt-4 inline-flex flex-col items-center">
@@ -46,10 +46,10 @@ function FocusSection({ items }: { items: { id: string; titleEn: string; titleCn
   return (
     <section className="mx-auto px-6 pb-16 md:px-12 lg:px-24">
       <div className="mb-10">
-        <h2 className="text-2xl font-[900] tracking-[0.05em] text-[#1d2087] lg:text-3xl" style={{ WebkitTextStroke: "0.5px #1d2087" }}>
+        <h2 className="text-2xl font-bold md:font-[900] tracking-[0.05em] text-[#1d2087] lg:text-3xl text-stroke-navy-light">
           TISCLLB will be focused on
         </h2>
-        <h3 className="mt-1 text-xl font-[900] tracking-[0.1em] text-[#1d2087] lg:text-2xl" style={{ WebkitTextStroke: "0.5px #1d2087" }}>
+        <h3 className="mt-1 text-xl font-bold md:font-[900] tracking-[0.1em] text-[#1d2087] lg:text-2xl text-stroke-navy-light">
           我們專注於
         </h3>
       </div>
@@ -105,10 +105,10 @@ function SeminarsSection({ content }: { content: { contentEn: string | null; con
   return (
     <section className="mx-auto px-6 py-12 md:px-12 md:py-16 lg:px-24">
       <div className="mb-10">
-        <h2 className="text-2xl font-[900] tracking-[0.05em] text-[#1d2087] lg:text-3xl" style={{ WebkitTextStroke: "0.5px #1d2087" }}>
+        <h2 className="text-2xl font-bold md:font-[900] tracking-[0.05em] text-[#1d2087] lg:text-3xl text-stroke-navy-light">
           Seminars and Continuing Education
         </h2>
-        <h3 className="mt-1 text-xl font-[900] tracking-[0.1em] text-[#1d2087] lg:text-2xl" style={{ WebkitTextStroke: "0.5px #1d2087" }}>
+        <h3 className="mt-1 text-xl font-bold md:font-[900] tracking-[0.1em] text-[#1d2087] lg:text-2xl text-stroke-navy-light">
           研討會及繼續教育
         </h3>
       </div>
@@ -154,10 +154,10 @@ function ResearchSection({ content }: { content: { contentEn: string | null; con
   return (
     <section className="mx-auto px-6 py-12 md:px-12 md:py-16 lg:px-24">
       <div className="mb-6">
-        <h2 className="text-2xl font-[900] tracking-[0.05em] text-[#1d2087] lg:text-3xl" style={{ WebkitTextStroke: "0.5px #1d2087" }}>
+        <h2 className="text-2xl font-bold md:font-[900] tracking-[0.05em] text-[#1d2087] lg:text-3xl text-stroke-navy-light">
           Research and Development
         </h2>
-        <h3 className="mt-1 text-xl font-[900] tracking-[0.1em] text-[#1d2087] lg:text-2xl" style={{ WebkitTextStroke: "0.5px #1d2087" }}>
+        <h3 className="mt-1 text-xl font-bold md:font-[900] tracking-[0.1em] text-[#1d2087] lg:text-2xl text-stroke-navy-light">
           研究與發展
         </h3>
       </div>

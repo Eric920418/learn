@@ -18,8 +18,8 @@ export default async function ContactPage() {
       <Header />
       <main className="bg-white">
         {/* 頁面大標題 */}
-        <section className="pb-20 pt-20 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
-          <h1 className="text-4xl font-black tracking-[0.15em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
+        <section className="pb-12 pt-12 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
+          <h1 className="text-4xl font-bold md:font-black tracking-[0.15em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
             TISCLLB
           </h1>
           <div className="mx-auto mt-4 inline-flex flex-col items-center">
@@ -46,8 +46,7 @@ export default async function ContactPage() {
         <section className="bg-[#d1f0f4]/28 py-16 lg:py-20">
           <div className="mx-auto max-w-4xl px-6 md:px-12 lg:px-16">
             <h3
-              className="mb-8 flex items-baseline gap-4 text-2xl font-[900] tracking-[0.1em] text-[#256f91] lg:text-3xl"
-              style={{ WebkitTextStroke: "0.5px #256f91" }}
+              className="mb-8 flex items-baseline gap-4 text-2xl font-bold md:font-[900] tracking-[0.1em] text-[#256f91] lg:text-3xl text-stroke-blue-light"
             >
               <span>INFORMATION</span>
               <span className="text-xl lg:text-2xl">聯絡資訊</span>

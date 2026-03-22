@@ -39,7 +39,7 @@ function HeroSection({ hero }: { hero: { titleLine1: string; titleLine2: string;
   const heroImage = hero?.heroImage ?? "/TISCLLB-web_首頁＿首圖.jpg";
 
   return (
-    <section className="relative min-h-[calc(100vh-65px)] overflow-hidden">
+    <section className="relative min-h-0 md:min-h-[calc(100vh-65px)] overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src={heroImage}
@@ -50,17 +50,16 @@ function HeroSection({ hero }: { hero: { titleLine1: string; titleLine2: string;
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[calc(100vh-65px)] flex-col justify-center px-6 pb-12 md:px-12 md:pb-16 lg:px-16 xl:px-24">
-        <h2 className="mb-2 text-2xl font-black tracking-[0.2em] text-[#1d2087] md:text-4xl lg:text-5xl xl:text-6xl">
+      <div className="relative z-10 flex min-h-0 md:min-h-[calc(100vh-65px)] flex-col justify-center px-6 py-16 md:px-12 md:pb-16 lg:px-16 xl:px-24">
+        <h2 className="mb-2 text-2xl font-bold md:font-black tracking-[0.2em] text-[#1d2087] md:text-4xl lg:text-5xl xl:text-6xl">
           {titleLine1}
         </h2>
-        <h1 className="mb-2 text-4xl font-black tracking-[0.12em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
+        <h1 className="mb-2 text-4xl font-bold md:font-black tracking-[0.12em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
           {titleLine2}
         </h1>
         <div className="mb-5 h-1 w-40 bg-[#1d2087] md:w-56 lg:w-100" />
         <h2
-          className="text-2xl font-black leading-snug text-[#1d2087] md:text-3xl lg:text-4xl xl:text-5xl"
-          style={{ WebkitTextStroke: "1px #1d2087" }}
+          className="text-2xl font-bold md:font-black leading-snug text-[#1d2087] md:text-3xl lg:text-4xl xl:text-5xl text-stroke-navy"
         >
           {subtitleCn.split("\n").map((line, i) => (
             <span key={i}>{line}{i < subtitleCn.split("\n").length - 1 && <br />}</span>
@@ -70,7 +69,7 @@ function HeroSection({ hero }: { hero: { titleLine1: string; titleLine2: string;
           {subtitleEn}
         </p>
         {announcement && (
-          <div className="mt-[20px] text-2xl font-black leading-snug tracking-[0.2em] text-[#256f91] md:text-3xl lg:text-4xl xl:text-5xl" style={{ WebkitTextStroke: "1px #256f91" }}>
+          <div className="mt-[20px] text-2xl font-bold md:font-black leading-snug tracking-[0.2em] text-[#256f91] md:text-3xl lg:text-4xl xl:text-5xl text-stroke-blue">
             {announcement}
           </div>
         )}
@@ -87,15 +86,14 @@ function PhilosophySection({ goals, visions }: { goals: { id: string; contentEn:
       <div className="relative mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
         <div className="mb-12">
           <h2
-            className="text-right text-3xl font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl xl:text-5xl"
-            style={{ WebkitTextStroke: "1px #1d2087" }}
+            className="text-right text-3xl font-bold md:font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl xl:text-5xl text-stroke-navy"
           >
             倡 導 理 念
           </h2>
-          <div className="mt-4 ml-auto h-[2px] w-1/2 bg-[#1d2087]" />
+          <div className="mt-2 lg:mt-4 ml-auto h-[2px] w-1/2 bg-[#1d2087]" />
         </div>
 
-        <div className="pl-6 lg:pl-10">
+        <div className="">
           <div className="mb-14">
             <h3 className="mb-6 text-xl font-bold tracking-[0.2em] text-[#256f91] lg:text-2xl">
               目 標
@@ -130,12 +128,11 @@ function EventsSection({ events }: { events: { id: string; date: string; titleCn
       <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
         <div className="mb-12">
           <h2
-            className="text-3xl font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl xl:text-5xl"
-            style={{ WebkitTextStroke: "1px #1d2087" }}
+            className="text-3xl font-bold md:font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl xl:text-5xl text-stroke-navy"
           >
             活動訊息
           </h2>
-          <div className="mt-4 h-[2px] w-1/2 bg-[#1d2087]" />
+          <div className="mt-2 lg:mt-4 h-[2px] w-1/2 bg-[#1d2087]" />
         </div>
 
         <div className="flex justify-center">

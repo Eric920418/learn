@@ -39,8 +39,8 @@ export default async function AboutPage() {
 
 function PageTitle() {
   return (
-    <section className="pb-20 pt-20 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
-      <h1 className="text-4xl font-black tracking-[0.15em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
+    <section className="pb-12 pt-12 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
+      <h1 className="text-4xl font-bold md:font-black tracking-[0.15em] text-[#1d2087] md:text-6xl lg:text-8xl xl:text-9xl">
         TISCLLB
       </h1>
       <div className="mx-auto mt-4 inline-flex flex-col items-center">
@@ -56,10 +56,10 @@ function PageTitle() {
 function IntroHeader() {
   return (
     <section className="mx-auto px-6 pb-6 md:px-12 lg:px-24">
-      <h2 className="text-3xl font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl" style={{ WebkitTextStroke: "1px #1d2087" }}>
+      <h2 className="text-3xl font-bold md:font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl text-stroke-navy">
         本會簡介
       </h2>
-      <div className="mt-3 h-[2px] w-1/3 bg-[#1d2087]" />
+      <div className="mt-2 lg:mt-4 h-[2px] w-1/2 bg-[#1d2087]" />
     </section>
   );
 }
@@ -107,10 +107,10 @@ function AimBullet({ en, zh }: { en: string; zh: string }) {
 function CharterHeader() {
   return (
     <section className="mx-auto px-6 pt-16 pb-6 md:px-12 lg:px-24">
-      <h2 className="text-3xl font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl" style={{ WebkitTextStroke: "1px #1d2087" }}>
+      <h2 className="text-3xl font-bold md:font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl text-stroke-navy">
         本會章程
       </h2>
-      <div className="mt-3 h-[2px] w-1/3 bg-[#1d2087]" />
+      <div className="mt-2 lg:mt-4 h-[2px] w-1/2 bg-[#1d2087]" />
     </section>
   );
 }
@@ -141,16 +141,51 @@ function DirectorBullet({ en, zh }: { en: string; zh: string }) {
 }
 
 function LeadershipQuote({ content }: { content: { contentEn: string | null; contentCn: string | null } | undefined }) {
+  const enText = content?.contentEn || "For most practitioners, creating professional LEADERSHIP is important";
+  const cnText = content?.contentCn || "對於大多數從業者來說 建立專業的領導力很重要";
+
+  const renderEnglish = (text: string) => {
+    const parts = text.split(/(LEADERSHIP)/);
+    return parts.map((part, i) =>
+      part === "LEADERSHIP" ? (
+        <span key={i} className="relative inline-block">
+          {part}
+          <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[5px] bg-[#ff8f1e]" />
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    );
+  };
+
+  const renderChinese = (text: string) => {
+    const parts = text.split(/(專業的領導力)/);
+    return parts.map((part, i) =>
+      part === "專業的領導力" ? (
+        <span key={i} className="relative inline-block">
+          {part}
+          <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[5px] bg-[#ff8f1e]" />
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    );
+  };
+
   return (
-    <section className="relative mx-auto px-6 pb-12 md:px-12 lg:px-24">
-      <span className="absolute left-2 top-[-10px] text-3xl leading-none text-[#1d2087] md:left-[-10px] md:top-[-15px] md:text-4xl lg:left-[-20px] lg:top-[-20px] lg:text-7xl">▶</span>
-      <div>
-        <h2 className="text-2xl font-black italic leading-tight text-[#1d2087] lg:text-3xl xl:text-4xl">
-          {content?.contentEn || "For most practitioners, creating professional LEADERSHIP is important"}
-        </h2>
-        <p className="mt-3 text-xl font-bold text-[#1d2087] lg:text-2xl">
-          {content?.contentCn || "對於大多數從業者來說 建立專業的領導力很重要"}
-        </p>
+    <section className="mx-auto px-6 pb-12 md:px-12 lg:px-16 bg-bg-block">
+      <div className="relative  py-10  ">
+        <div className="max-w-xl me-auto">
+          <span className="absolute left-[-40px] top-[40px] text-4xl leading-none text-[#1d2087] md:left-[-80px] md:top-[30px] md:text-6xl lg:left-[-100px] lg:top-[30px] ">
+            ▶
+          </span>
+          <h2 className="text-2xl font-bold md:font-black italic leading-snug text-[#1d2087] lg:text-3xl xl:text-4xl">
+            {renderEnglish(enText)}
+          </h2>
+          <p className="mt-4 text-xl font-bold text-[#1d2087] lg:text-2xl leading-relaxed">
+            {renderChinese(cnText)}
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -174,10 +209,10 @@ function DirectorsPower({ content }: { content: { contentEn: string | null; cont
   return (
     <section className="mx-auto px-6 pb-12 md:px-12 lg:px-24">
       <div className="text-center">
-        <h2 className="text-2xl font-black italic text-[#ff8f1e] md:text-3xl lg:text-5xl xl:text-6xl">
+        <h2 className="text-2xl font-bold md:font-black italic text-[#ff8f1e] md:text-3xl lg:text-5xl xl:text-6xl">
           Directors ARE POWER to shape this<br />association
         </h2>
-        <p className="mt-4 text-xl font-black text-[#ff8f1e] md:text-2xl lg:text-4xl">
+        <p className="mt-4 text-xl font-bold md:font-black text-[#ff8f1e] md:text-2xl lg:text-4xl">
           理監事們是塑造這個學會的力量
         </p>
       </div>
@@ -196,14 +231,14 @@ function DirectorsPower({ content }: { content: { contentEn: string | null; cont
 function BoardMembersSection({ members }: { members: { id: string; nameEn: string; titleEn: string; titleCn: string; image: string | null }[] }) {
   return (
     <section className="mx-auto px-6 pb-12 md:px-12 lg:px-24">
-      <h2 className="text-3xl font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl" style={{ WebkitTextStroke: "1px #1d2087" }}>
+      <h2 className="text-3xl font-bold md:font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl text-stroke-navy">
         組織成員
       </h2>
       <div className="mt-3 mb-8 h-[2px] w-1/3 bg-[#1d2087]" />
       <div className="mb-8">
-        <p className="font-black text-[#1d2087] text-xl md:text-2xl">第一屆</p>
-        <p className="font-black text-[#1d2087] text-xl md:text-2xl">台灣臨床下肢生物力學國際學會</p>
-        <p className="font-black text-[#1d2087] text-xl md:text-2xl">理監事</p>
+        <p className="font-bold md:font-black text-[#1d2087] text-xl md:text-2xl">第一屆</p>
+        <p className="font-bold md:font-black text-[#1d2087] text-xl md:text-2xl">台灣臨床下肢生物力學國際學會</p>
+        <p className="font-bold md:font-black text-[#1d2087] text-xl md:text-2xl">理監事</p>
       </div>
 
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 md:gap-6">

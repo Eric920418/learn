@@ -36,3 +36,37 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* 響應式 text-stroke：手機端不描邊，md+ 才加描邊 */
+.text-stroke-navy {
+  -webkit-text-stroke: 0;
+}
+@media (min-width: 768px) {
+  .text-stroke-navy {
+    -webkit-text-stroke: 1px #1d2087;
+  }
+}
+.text-stroke-navy-light {
+  -webkit-text-stroke: 0;
+}
+@media (min-width: 768px) {
+  .text-stroke-navy-light {
+    -webkit-text-stroke: 0.5px #1d2087;
+  }
+}
+.text-stroke-blue {
+  -webkit-text-stroke: 0;
+}
+@media (min-width: 768px) {
+  .text-stroke-blue {
+    -webkit-text-stroke: 1px #256f91;
+  }
+}
+.text-stroke-blue-light {
+  -webkit-text-stroke: 0;
+}
+@media (min-width: 768px) {
+  .text-stroke-blue-light {
+    -webkit-text-stroke: 0.5px #256f91;
+  }
+}
