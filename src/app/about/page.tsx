@@ -173,8 +173,8 @@ function LeadershipQuote({ content }: { content: { contentEn: string | null; con
   };
 
   return (
-    <section className="mx-auto px-6 pb-12 md:px-12 lg:px-16 bg-bg-block">
-      <div className="relative  py-10  ">
+    <section className="mx-auto px-6 py-12 md:px-12 lg:px-16 bg-bg-block">
+      <div className="relative    ">
         <div className="max-w-xl me-auto">
           <span className="absolute left-[-40px] top-[40px] text-4xl leading-none text-[#1d2087] md:left-[-80px] md:top-[30px] md:text-6xl lg:left-[-100px] lg:top-[30px] ">
             ▶
@@ -207,7 +207,7 @@ function AssociationPurpose({ purposes }: { purposes: { id: string; contentEn: s
 
 function DirectorsPower({ content }: { content: { contentEn: string | null; contentCn: string | null } | undefined }) {
   return (
-    <section className="mx-auto px-6 pb-12 md:px-12 lg:px-24">
+    <section className="mx-auto px-6 py-12 md:px-12 lg:px-24">
       <div className="text-center">
         <h2 className="text-2xl font-bold md:font-black italic text-[#ff8f1e] md:text-3xl lg:text-5xl xl:text-6xl">
           Directors ARE POWER to shape this<br />association
