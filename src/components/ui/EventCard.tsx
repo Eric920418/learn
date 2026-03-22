@@ -25,7 +25,7 @@ export default function EventCard({ events }: { events: Event[] }) {
   const event = events[activeIndex];
 
   const card = (
-    <div className="relative w-full max-w-2xl overflow-hidden rounded-lg">
+    <div className="relative w-full max-w-md overflow-hidden rounded-lg">
       {event.image ? (
         <div className="relative w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
