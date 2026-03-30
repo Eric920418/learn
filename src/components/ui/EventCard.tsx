@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import EventInfoModal from "./EventInfoModal";
+import DownloadButton from "./DownloadButton";
 
 interface Event {
   id: string;
@@ -19,6 +20,17 @@ interface Event {
 
 export default function EventCard({ events }: { events: Event[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const next = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % events.length);
+  }, [events.length]);
+
+  useEffect(() => {
+    if (events.length <= 1 || paused) return;
+    const timer = setInterval(next, 5000);
+    return () => clearInterval(timer);
+  }, [events.length, paused, next]);
 
   if (events.length === 0) {
     return <p className="text-gray-500">目前沒有活動</p>;
@@ -32,6 +44,7 @@ export default function EventCard({ events }: { events: Event[] }) {
         <div className="relative w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={event.image} alt={event.titleCn} className="w-full h-auto rounded-lg" />
+          <DownloadButton url={event.image} filename={event.titleCn} />
         </div>
       ) : (
         <div className="bg-gradient-to-br from-gradient-start via-primary-blue to-gradient-end px-6 py-16 text-center text-white md:px-8 md:py-20 lg:px-14 lg:py-28">
@@ -60,7 +73,7 @@ export default function EventCard({ events }: { events: Event[] }) {
   );
 
   return (
-    <div className="relative">
+    <div className="relative" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       {event.link ? (
         <a href={event.link} target="_blank" rel="noopener noreferrer" className="block transition-transform hover:scale-[1.02]">
           {card}

@@ -2,6 +2,7 @@ import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import EventInfoModal from "@/components/ui/EventInfoModal";
 import { getPublishedEvents } from "@/lib/queries/events";
+import DownloadButton from "@/components/ui/DownloadButton";
 
 export default async function EventsPage() {
   const eventList = await getPublishedEvents();
@@ -49,6 +50,7 @@ function EventBlock({ event }: { event: { sectionTitle: string; date: string; ti
         <div className="relative w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={event.image} alt={event.titleCn} className="w-full h-auto rounded-lg" />
+          <DownloadButton url={event.image} filename={event.titleCn} />
         </div>
       ) : (
         <div className={`bg-gradient-to-br ${gradientClass} px-6 py-20 text-center text-white md:px-8 md:py-28 lg:px-10 lg:py-36`}>
