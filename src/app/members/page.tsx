@@ -34,16 +34,12 @@ export default async function MembersPage({
         {/* 會員列表 */}
         <section className="mx-auto px-6 pb-16 md:px-12 md:pb-20 lg:px-24">
           <div className="flex border-b-2 border-primary-navy/20 pb-3 text-xs font-bold text-primary-navy md:text-sm">
-            <div className="w-8 shrink-0 md:w-10" />
             <div className="flex-1">姓名</div>
             <div className="flex-1 text-right lg:text-left">工作單位 / E-mail</div>
           </div>
 
           {members.map((m, i) => (
             <div key={m.id} className="flex border-b border-gray-200 py-3 text-sm md:py-4">
-              <div className="w-8 shrink-0 flex items-center justify-center text-sm font-bold text-primary-navy md:w-10 md:ms-[-10px] md:text-lg">
-                {(currentPage - 1) * PAGE_SIZE + i + 1}
-              </div>
               <div className="flex-1">
                 <p className="font-black text-sm text-[#1d2087] md:text-base lg:text-lg">{m.nameCn}</p>
                 <p className="text-xs text-[#1d2087] md:text-sm lg:text-lg">{m.nameEn}</p>
