@@ -73,6 +73,7 @@ pnpm dev
 | `/admin/members` | 會員名單管理 |
 | `/admin/about` | 關於本會各區塊（Aims/Directors/Purposes/引言） |
 | `/admin/recruit` | 招募會員頁面內容 |
+| `/admin/gallery` | 活動錦集管理（相簿 CRUD + 照片上傳管理） |
 | `/admin/blog` | Blog 文章/分類/標籤管理 |
 | `/admin/settings` | 全站設定（聯絡資訊、版權文字） |
 
@@ -83,6 +84,7 @@ pnpm dev
 - **單行表**：全站設定 (site_settings)、首頁 Hero (hero_content)
 - **列表表**：倡導理念、組織成員、會員、活動、Aims、Directors、Purposes、Focus Items
 - **通用文字區塊**：page_sections（研討會文字、研發文字、領導力引言等）
+- **活動錦集**：相簿 (gallery_albums)、照片 (gallery_photos)
 - **Blog 系統**：文章、分類、標籤
 
 ## 專案結構
@@ -100,11 +102,13 @@ src/
 │   │   ├── members/                # 會員 CRUD
 │   │   ├── about/                  # About 各區塊
 │   │   ├── recruit/                # 招募頁面內容
+│   │   ├── gallery/                 # 活動錦集（相簿 + 照片管理）
 │   │   ├── blog/                   # Blog 管理
 │   │   └── settings/               # 全站設定
 │   ├── api/
 │   │   ├── auth/[...nextauth]/     # NextAuth API
 │   │   └── upload/                 # 圖片上傳 API (Vercel Blob)
+│   ├── gallery/                    # 活動錦集前台
 │   ├── about/                      # 關於本會
 │   ├── blog/                       # Blog 前台
 │   ├── contact/                    # 聯絡我們
@@ -120,6 +124,8 @@ src/
 │   │   ├── FormField.tsx
 │   │   ├── BilingualField.tsx
 │   │   ├── ImageUpload.tsx
+│   │   ├── MultiImageUpload.tsx
+│   │   ├── PhotoManager.tsx
 │   │   ├── SubmitButton.tsx
 │   │   ├── DeleteButton.tsx
 │   │   └── ErrorDisplay.tsx
@@ -131,7 +137,7 @@ src/
 │   ├── actions/                    # Server Actions (CRUD)
 │   ├── queries/                    # 資料查詢函數
 │   └── db/
-│       ├── schema.ts               # Drizzle ORM schema (19 張表)
+│       ├── schema.ts               # Drizzle ORM schema (21 張表)
 │       ├── index.ts                 # DB 連線
 │       └── seed.ts                  # 初始資料
 ├── types/index.ts                   # TypeScript 類型擴展
@@ -148,6 +154,8 @@ src/
 | `/about` | 本會簡介 + 組織成員 + 章程 |
 | `/philosophy` | 倡導理念（目標 + 願景） |
 | `/events` | 活動列表 |
+| `/gallery` | 活動錦集（相簿列表） |
+| `/gallery/[id]` | 活動相簿詳情（瀑布流照片） |
 | `/members` | 會員名單表格 |
 | `/recruit` | 招募會員 + 研討會 + 研發 |
 | `/contact` | 聯絡資訊 |

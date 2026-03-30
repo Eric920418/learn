@@ -4,6 +4,7 @@ const sections = [
   { href: "/admin/hero", label: "首頁 Hero", desc: "編輯首頁主視覺文字與圖片" },
   { href: "/admin/philosophy", label: "倡導理念", desc: "管理目標與願景條目" },
   { href: "/admin/events", label: "活動管理", desc: "新增、編輯、刪除活動" },
+  { href: "/admin/gallery", label: "活動錦集", desc: "管理活動相簿與照片" },
   { href: "/admin/board-members", label: "組織成員", desc: "管理理監事名單與照片" },
   { href: "/admin/members", label: "會員名單", desc: "管理會員資料" },
   { href: "/admin/about", label: "關於本會", desc: "編輯目標、理事、學會目的" },

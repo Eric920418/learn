@@ -8,6 +8,7 @@ const navLinks = [
   { label: "關於本會", href: "/about" },
   { label: "倡導理念", href: "/#philosophy" },
   { label: "活動訊息", href: "/events" },
+  { label: "活動錦集", href: "/gallery" },
   { label: "本會會員", href: "/members" },
   { label: "招募會員", href: "/recruit" },
   { label: "聯絡我們", href: "/contact" },

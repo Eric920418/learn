@@ -207,6 +207,33 @@ export const focusItems = pgTable("focus_items", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+// ============================================
+// 活動錦集（Gallery）
+// ============================================
+
+export const galleryAlbums = pgTable("gallery_albums", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  coverImage: text("cover_image"),
+  eventDate: text("event_date").notNull(),
+  published: boolean("published").default(true).notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const galleryPhotos = pgTable("gallery_photos", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  albumId: uuid("album_id")
+    .notNull()
+    .references(() => galleryAlbums.id, { onDelete: "cascade" }),
+  imageUrl: text("image_url").notNull(),
+  caption: text("caption"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
 export const pageSections = pgTable("page_sections", {
   id: uuid("id").defaultRandom().primaryKey(),
   pageSlug: varchar("page_slug", { length: 50 }).notNull(),
@@ -254,6 +281,17 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
   tag: one(tags, {
     fields: [postTags.tagId],
     references: [tags.id],
+  }),
+}));
+
+export const galleryAlbumsRelations = relations(galleryAlbums, ({ many }) => ({
+  photos: many(galleryPhotos),
+}));
+
+export const galleryPhotosRelations = relations(galleryPhotos, ({ one }) => ({
+  album: one(galleryAlbums, {
+    fields: [galleryPhotos.albumId],
+    references: [galleryAlbums.id],
   }),
 }));
 
