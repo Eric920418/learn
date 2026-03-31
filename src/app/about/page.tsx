@@ -15,6 +15,9 @@ export default async function AboutPage() {
   ]);
 
   const directorsPower = sections.find(s => s.sectionKey === "directors_power");
+  const leadershipQuote = sections.find(s => s.sectionKey === "leadership_quote");
+  const valuesImage = sections.find(s => s.sectionKey === "values_image");
+  const boardMembersIntro = sections.find(s => s.sectionKey === "board_members_intro");
 
   return (
     <>
@@ -22,14 +25,14 @@ export default async function AboutPage() {
       <main className="bg-white">
         <PageTitle />
         <IntroHeader />
-        <ValuesSection />
+        <ValuesSection imageUrl={valuesImage?.contentEn} />
         <AimSection aims={aims} />
         <CharterHeader />
         <DirectorsSection directors={directors} />
-        <LeadershipQuote />
+        <LeadershipQuote content={leadershipQuote} />
         <AssociationPurpose purposes={purposes} />
         <DirectorsPower content={directorsPower} />
-        <BoardMembersSection members={boardMembersList} />
+        <BoardMembersSection members={boardMembersList} intro={boardMembersIntro} />
       </main>
       <Footer />
     </>
@@ -63,13 +66,14 @@ function IntroHeader() {
   );
 }
 
-function ValuesSection() {
+function ValuesSection({ imageUrl }: { imageUrl?: string | null }) {
+  const src = imageUrl || "/TISCLLB-web_關於本會＿學會價值 (1).jpg";
   return (
     <section className="mx-auto px-6 pb-8 md:px-12 lg:px-24">
       <h3 className="text-2xl font-bold text-[#1d2087] lg:text-2xl">Our Values for TISCLLB</h3>
       <h4 className="mb-8 font-bold text-xl text-[#1d2087] md:text-2xl">台灣臨床下肢生物力學國際學會的價值</h4>
       <div className="flex justify-center ">
-        <Image src="/TISCLLB-web_關於本會＿學會價值 (1).jpg" alt="Our Values" width={900} height={600} className="w-full lg:w-[900px] lg:h-[750px] object-contain object-center" />
+        <Image src={src} alt="Our Values" width={900} height={600} className="w-full lg:w-[900px] lg:h-[750px] object-contain object-center" />
       </div>
     </section>
   );
@@ -139,7 +143,9 @@ function DirectorBullet({ en, zh }: { en: string; zh: string }) {
   );
 }
 
-function LeadershipQuote() {
+function LeadershipQuote({ content }: { content?: { contentEn: string | null; contentCn: string | null } }) {
+  const en = content?.contentEn || "For most practitioners, creating professional LEADERSHIP is important";
+  const cn = content?.contentCn || "對於大多數從業者來說 建立專業的領導力很重要";
   return (
     <section className="mx-auto px-6 py-12 md:px-12 lg:px-16 bg-bg-block">
       <div className="relative">
@@ -148,21 +154,10 @@ function LeadershipQuote() {
             ▶
           </span>
           <h2 className="text-2xl font-bold md:font-black italic leading-snug text-[#1d2087] lg:text-3xl xl:text-4xl">
-            For most practitioners, creating professional{" "}
-            <span className="relative inline-block">
-              LEADERSHIP
-              <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[8px] bg-[#ff8f1e]" />
-            </span>{" "}
-            is important
+            {en}
           </h2>
           <p className="mt-4 text-xl font-bold text-[#1d2087] lg:text-2xl leading-relaxed">
-            對於大多數從業者來說<br className="md:hidden" />
-            {" "}建立
-            <span className="relative inline-block">
-              專業的領導力
-              <span className="absolute bottom-[-2px] left-[-8px] right-[-8px] h-[8px] bg-[#ff8f1e]" />
-            </span>
-            很重要
+            {cn}
           </p>
         </div>
       </div>
@@ -207,7 +202,8 @@ function DirectorsPower({ content }: { content: { contentEn: string | null; cont
   );
 }
 
-function BoardMembersSection({ members }: { members: { id: string; nameEn: string; titleEn: string; titleCn: string; image: string | null }[] }) {
+function BoardMembersSection({ members, intro }: { members: { id: string; nameEn: string; titleEn: string; titleCn: string; image: string | null }[]; intro?: { contentEn: string | null; contentCn: string | null } }) {
+  const introText = intro?.contentEn || "第一屆\n台灣臨床下肢生物力學國際學會\n理監事";
   return (
     <section className="mx-auto px-6 pb-12 md:px-12 lg:px-24">
       <h2 className="text-3xl font-bold md:font-[900] tracking-[0.2em] text-[#1d2087] lg:text-4xl text-stroke-navy">
@@ -215,9 +211,9 @@ function BoardMembersSection({ members }: { members: { id: string; nameEn: strin
       </h2>
       <div className="mt-3 mb-8 h-[2px] w-1/3 bg-[#1d2087]" />
       <div className="mb-8">
-        <p className="font-bold md:font-black text-[#1d2087] text-xl md:text-2xl">第一屆</p>
-        <p className="font-bold md:font-black text-[#1d2087] text-xl md:text-2xl">台灣臨床下肢生物力學國際學會</p>
-        <p className="font-bold md:font-black text-[#1d2087] text-xl md:text-2xl">理監事</p>
+        {introText.split("\n").map((line, i) => (
+          <p key={i} className="font-bold md:font-black text-[#1d2087] text-xl md:text-2xl">{line}</p>
+        ))}
       </div>
 
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 md:gap-6">

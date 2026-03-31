@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BilingualField } from "@/components/admin/BilingualField";
 import { FormField } from "@/components/admin/FormField";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { ErrorDisplay } from "@/components/admin/ErrorDisplay";
@@ -76,10 +77,24 @@ export function AboutForm({
 
   const leadershipSection = sections.find(s => s.sectionKey === "leadership_quote");
   const directorsPowerSection = sections.find(s => s.sectionKey === "directors_power");
+  const valuesImageSection = sections.find(s => s.sectionKey === "values_image");
+  const boardMembersIntroSection = sections.find(s => s.sectionKey === "board_members_intro");
 
   return (
     <div>
       <ErrorDisplay error={error} />
+
+      <div className="mb-8">
+        <h2 className="text-lg font-bold mb-4">學會價值圖片</h2>
+        <form action={async (f) => { const r = await updatePageSection(f); if (r.error) setError(r.error); else router.refresh(); }} className="bg-white p-4 rounded-lg border space-y-3">
+          {valuesImageSection && <input type="hidden" name="id" value={valuesImageSection.id} />}
+          <input type="hidden" name="pageSlug" value="about" />
+          <input type="hidden" name="sectionKey" value="values_image" />
+          <ImageUpload name="contentEn" currentImage={valuesImageSection?.contentEn} label="學會價值圖片（Our Values）" />
+          <input type="hidden" name="contentCn" value="" />
+          <SubmitButton />
+        </form>
+      </div>
 
       <CrudSection title="Our Aim 我們的目標" items={aims} onCreate={createAim} onUpdate={updateAim} onDelete={deleteAim} />
       <CrudSection title="Why Have Directors 為什麼設置理事" items={directors} onCreate={createDirector} onUpdate={updateDirector} onDelete={deleteDirector} />
@@ -103,6 +118,19 @@ export function AboutForm({
           <input type="hidden" name="pageSlug" value="about" />
           <input type="hidden" name="sectionKey" value="directors_power" />
           <BilingualField label="內容" nameEn="contentEn" nameCn="contentCn" defaultValueEn={directorsPowerSection?.contentEn ?? ""} defaultValueCn={directorsPowerSection?.contentCn ?? ""} type="textarea" />
+          <SubmitButton />
+        </form>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-lg font-bold mb-4">組織成員介紹文字</h2>
+        <p className="text-sm text-gray-500 mb-2">顯示在組織成員區塊上方的介紹文字，每行用換行分隔。預設：「第一屆 / 台灣臨床下肢生物力學國際學會 / 理監事」</p>
+        <form action={async (f) => { const r = await updatePageSection(f); if (r.error) setError(r.error); else router.refresh(); }} className="bg-white p-4 rounded-lg border space-y-3">
+          {boardMembersIntroSection && <input type="hidden" name="id" value={boardMembersIntroSection.id} />}
+          <input type="hidden" name="pageSlug" value="about" />
+          <input type="hidden" name="sectionKey" value="board_members_intro" />
+          <FormField label="介紹文字" name="contentEn" type="textarea" defaultValue={boardMembersIntroSection?.contentEn ?? ""} />
+          <input type="hidden" name="contentCn" value="" />
           <SubmitButton />
         </form>
       </div>
