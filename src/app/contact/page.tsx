@@ -36,9 +36,7 @@ export default async function ContactPage() {
             {welcomeSection?.contentCn ?? "感謝您造訪TISCLLB的網站。"}
           </p>
           <p className="mt-6 text-base font-bold leading-relaxed text-foreground md:text-lg">
-            {welcomeSection?.contentEn ?? "歡迎您提供寶貴的意見，若想尋求合作或有其他需求"}
-            <br />
-            請聯繫我們，謝謝！
+            {welcomeSection?.contentEn ?? "歡迎您提供寶貴的意見，若想尋求合作或有其他需求，請聯繫我們，謝謝！"}
           </p>
         </section>
 

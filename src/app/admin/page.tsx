@@ -9,6 +9,7 @@ const sections = [
   { href: "/admin/members", label: "會員名單", desc: "管理會員資料" },
   { href: "/admin/about", label: "關於本會", desc: "編輯目標、理事、學會目的" },
   { href: "/admin/recruit", label: "招募會員", desc: "編輯招募頁面內容" },
+  { href: "/admin/contact", label: "聯絡我們", desc: "編輯聯絡頁面歡迎文字" },
   { href: "/admin/blog", label: "Blog 管理", desc: "發布與編輯文章" },
   { href: "/admin/settings", label: "全站設定", desc: "聯絡資訊、版權文字" },
 ];

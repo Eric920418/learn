@@ -71,8 +71,9 @@ pnpm dev
 | `/admin/events` | 活動管理（新增/編輯/刪除/發布） |
 | `/admin/board-members` | 組織成員管理（含照片上傳） |
 | `/admin/members` | 會員名單管理 |
-| `/admin/about` | 關於本會各區塊（Aims/Directors/Purposes/引言） |
+| `/admin/about` | 關於本會各區塊（Aims/Directors/Purposes/引言/學會價值圖片/組織成員介紹） |
 | `/admin/recruit` | 招募會員頁面內容 |
+| `/admin/contact` | 聯絡我們頁面歡迎文字 |
 | `/admin/gallery` | 活動錦集管理（相簿 CRUD + 照片上傳管理） |
 | `/admin/blog` | Blog 文章/分類/標籤管理 |
 | `/admin/settings` | 全站設定（聯絡資訊、版權文字） |
@@ -102,6 +103,7 @@ src/
 │   │   ├── members/                # 會員 CRUD
 │   │   ├── about/                  # About 各區塊
 │   │   ├── recruit/                # 招募頁面內容
+│   │   ├── contact/                # 聯絡我們頁面管理
 │   │   ├── gallery/                 # 活動錦集（相簿 + 照片管理）
 │   │   ├── blog/                   # Blog 管理
 │   │   └── settings/               # 全站設定

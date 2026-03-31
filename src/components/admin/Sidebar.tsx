@@ -13,6 +13,7 @@ const navItems = [
   { href: "/admin/members", label: "會員名單", icon: "📋" },
   { href: "/admin/about", label: "關於本會", icon: "ℹ️" },
   { href: "/admin/recruit", label: "招募會員", icon: "📢" },
+  { href: "/admin/contact", label: "聯絡我們", icon: "📞" },
   { href: "/admin/blog", label: "Blog 管理", icon: "✏️" },
   { href: "/admin/settings", label: "全站設定", icon: "⚙️" },
 ];
