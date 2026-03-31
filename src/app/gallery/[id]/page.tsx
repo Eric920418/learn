@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Header from "@/components/ui/Header";
+import Footer from "@/components/ui/Footer";
 import { getAlbumWithPhotos } from "@/lib/queries/gallery";
 
 export default async function AlbumDetailPage({
@@ -14,6 +16,8 @@ export default async function AlbumDetailPage({
   if (!album || !album.published) notFound();
 
   return (
+    <>
+    <Header />
     <main className="bg-white">
       {/* Page Title */}
       <section className="pb-12 pt-12 text-center md:pb-20 md:pt-20 lg:pb-24 lg:pt-24">
@@ -72,5 +76,7 @@ export default async function AlbumDetailPage({
         </Link>
       </section>
     </main>
+    <Footer />
+    </>
   );
 }

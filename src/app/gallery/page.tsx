@@ -1,11 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
+import Header from "@/components/ui/Header";
+import Footer from "@/components/ui/Footer";
 import { getPublishedAlbumsWithCover } from "@/lib/queries/gallery";
 
 export default async function GalleryPage() {
   const albums = await getPublishedAlbumsWithCover();
 
   return (
+    <>
+    <Header />
     <main className="bg-white">
       {/* Page Title */}
       <section className="pb-12 pt-12 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32 xl:pb-40 xl:pt-40">
@@ -72,5 +76,7 @@ export default async function GalleryPage() {
         )}
       </section>
     </main>
+    <Footer />
+    </>
   );
 }
