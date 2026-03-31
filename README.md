@@ -83,7 +83,7 @@ pnpm dev
 所有前台頁面內容由資料庫驅動，透過後台即可動態更新：
 
 - **單行表**：全站設定 (site_settings)、首頁 Hero (hero_content)
-- **列表表**：倡導理念、組織成員、會員、活動、Aims、Directors、Purposes、Focus Items
+- **列表表**：倡導理念、組織成員、會員、活動、Aims、Directors、Purposes、Focus Items、聯絡人 (contact_persons)
 - **通用文字區塊**：page_sections（研討會文字、研發文字、領導力引言等）
 - **活動錦集**：相簿 (gallery_albums)、照片 (gallery_photos)
 - **Blog 系統**：文章、分類、標籤

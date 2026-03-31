@@ -1,11 +1,13 @@
 import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getSiteSettings, getPageSection } from "@/lib/queries/settings";
+import { getContactPersons } from "@/lib/queries/contact";
 
 export default async function ContactPage() {
-  const [settings, welcomeSection] = await Promise.all([
+  const [settings, welcomeSection, contactPersons] = await Promise.all([
     getSiteSettings(),
     getPageSection("contact", "welcome"),
+    getContactPersons(),
   ]);
 
   const address = settings?.address ?? "10487台北市中山區復興北路154號5樓";
@@ -56,6 +58,27 @@ export default async function ContactPage() {
               <p>Fax:{fax}</p>
               <p>E-mail: {email}</p>
             </div>
+
+            {contactPersons.length > 0 && (
+              <div className="mt-12">
+                <h3 className="mb-6 flex items-baseline gap-4 text-2xl font-bold md:font-[900] tracking-[0.1em] text-[#256f91] lg:text-3xl text-stroke-blue-light">
+                  <span>CONTACT</span>
+                  <span className="text-xl lg:text-2xl">聯絡人</span>
+                </h3>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  {contactPersons.map((person) => (
+                    <div key={person.id} className="rounded-xl bg-white p-5 shadow-sm border border-gray-100">
+                      <p className="text-lg font-bold text-[#1d2087]">{person.name}</p>
+                      <p className="text-sm text-[#256f91] mt-1">{person.title}</p>
+                      <div className="mt-3 space-y-1 text-sm text-foreground">
+                        <p>Email: {person.email}</p>
+                        {person.phone && <p>Tel: {person.phone}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
