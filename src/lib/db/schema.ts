@@ -244,21 +244,6 @@ export const pageSections = pgTable("page_sections", {
 });
 
 // ============================================
-// 聯絡人
-// ============================================
-
-export const contactPersons = pgTable("contact_persons", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-  title: text("title").notNull(),
-  email: text("email").notNull(),
-  phone: text("phone"),
-  sortOrder: integer("sort_order").notNull().default(0),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
-});
-
-// ============================================
 // Relations
 // ============================================
 
