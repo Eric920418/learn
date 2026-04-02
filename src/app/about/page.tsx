@@ -73,7 +73,7 @@ function ValuesSection({ imageUrl }: { imageUrl?: string | null }) {
       <h3 className="text-2xl font-bold text-[#1d2087] lg:text-2xl">Our Values for TISCLLB</h3>
       <h4 className="mb-8 font-bold text-xl text-[#1d2087] md:text-2xl">台灣臨床下肢生物力學國際學會的價值</h4>
       <div className="flex justify-center ">
-        <Image src={src} alt="Our Values" width={900} height={600} className="w-full lg:w-[900px] lg:h-[750px] object-contain object-center" />
+        <Image src={src} alt="Our Values" width={1200} height={900} className="w-full lg:w-[1100px] lg:h-[900px] object-contain object-center" />
       </div>
     </section>
   );
@@ -90,7 +90,7 @@ function AimSection({ aims }: { aims: { id: string; contentEn: string; contentCn
         ))}
       </div>
       <div className="mt-10 flex justify-center">
-        <Image src="/TISCLLB-web_關於本會＿我們的目標.jpg" alt="IACB 國際網絡" width={900} height={900} className="w-full max-w-3xl" />
+        <Image src="/TISCLLB-web_關於本會＿我們的目標.jpg" alt="IACB 國際網絡" width={1200} height={1200} className="w-full max-w-5xl" />
       </div>
     </section>
   );
