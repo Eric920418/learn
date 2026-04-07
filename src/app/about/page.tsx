@@ -69,11 +69,11 @@ function IntroHeader() {
 function ValuesSection({ imageUrl }: { imageUrl?: string | null }) {
   const src = imageUrl || "/TISCLLB-web_關於本會＿學會價值 (1).jpg";
   return (
-    <section className="mx-auto px-6 pb-8 md:px-12 lg:px-24">
+    <section className="mx-auto px-6 pb-8 md:px-12 lg:px-24 overflow-x-clip">
       <h3 className="text-2xl font-bold text-[#1d2087] lg:text-2xl">Our Values for TISCLLB</h3>
       <h4 className="mb-8 font-bold text-xl text-[#1d2087] md:text-2xl">台灣臨床下肢生物力學國際學會的價值</h4>
       <div className="relative left-1/2 -translate-x-1/2 w-screen flex justify-center lg:static lg:left-auto lg:translate-x-0 lg:w-auto">
-        <Image src={src} alt="Our Values" width={1400} height={1050} className="w-full max-w-none lg:w-[1100px] lg:h-[900px] object-contain object-center" />
+        <Image src={src} alt="Our Values" width={1600} height={1200} className="w-[140%] max-w-none lg:w-[1100px] lg:h-[900px] object-contain object-center" />
       </div>
     </section>
   );
@@ -81,7 +81,7 @@ function ValuesSection({ imageUrl }: { imageUrl?: string | null }) {
 
 function AimSection({ aims }: { aims: { id: string; contentEn: string; contentCn: string }[] }) {
   return (
-    <section className="mx-auto px-6 py-8 md:px-12 lg:px-24">
+    <section className="mx-auto px-6 py-8 md:px-12 lg:px-24 overflow-x-clip">
       <h3 className="text-2xl font-bold text-[#1d2087] lg:text-2xl">Our Aim</h3>
       <h4 className="mb-6 font-bold text-xl text-[#1d2087] md:text-2xl">我們的目標</h4>
       <div className="space-y-5">
@@ -90,7 +90,7 @@ function AimSection({ aims }: { aims: { id: string; contentEn: string; contentCn
         ))}
       </div>
       <div className="mt-10 relative left-1/2 -translate-x-1/2 w-screen flex justify-center lg:static lg:left-auto lg:translate-x-0 lg:w-auto">
-        <Image src="/TISCLLB-web_關於本會＿我們的目標.jpg" alt="IACB 國際網絡" width={1400} height={1400} className="w-full max-w-none lg:max-w-5xl" />
+        <Image src="/TISCLLB-web_關於本會＿我們的目標.jpg" alt="IACB 國際網絡" width={1600} height={1600} className="w-[140%] max-w-none lg:w-auto lg:max-w-5xl" />
       </div>
     </section>
   );
