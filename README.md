@@ -192,3 +192,9 @@ src/
 - `AUTH_SECRET` — NextAuth 密鑰
 - `AUTH_URL` — 正式網域 (例: https://tiscllb.org)
 - `BLOB_READ_WRITE_TOKEN` — Vercel Blob 儲存 token
+
+### 渲染策略
+
+所有前台公開頁（`/`、`/about`、`/events`、`/gallery`、`/members`、`/philosophy`、`/recruit`、`/contact`、`/blog`、`/blog/[slug]`、`/gallery/[id]`）都標記了 `export const dynamic = "force-dynamic"`。
+
+> **為何不用 SSG？** Vercel build container 在 `iad1`（美東），Neon 在 `ap-southeast-1`（新加坡）。Build 階段若 SSG prerender，會跨太平洋打 Neon HTTP API，網路抖動或 cold start 隨時可能 `ETIMEDOUT` 讓整個 build 失敗。改為 `force-dynamic` 後，build 不打 DB，runtime 由 hkg1 function 連 Neon（亞洲區內）每次 request server-render，latency 約 30–50ms，CMS 內容更新立即生效。`/admin/*` 因為 layout 用 `auth()` 已自動為 dynamic，不需顯式設定。
