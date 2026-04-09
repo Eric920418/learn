@@ -54,12 +54,14 @@ pnpm dev
 
 ### 登入
 
-訪問 `/admin/login`，使用以下預設帳號：
+訪問 `/admin/login`，使用以下帳號：
 
-- **Email**: admin@tiscllb.org
-- **密碼**: admin123
+- **帳號**（Email 欄位）: `TIS00662829`
+- **密碼**: `00662829`
 
-> 請在部署後立即修改密碼。
+> ⚠️ 此帳號為臨時測試用，帳號字串塞在 `users.email` 欄位內（非真正 email 格式），因此 email 相關功能（寄信、驗證、忘記密碼）在此帳號下不可用。正式上線前請改回真正的 email、或為 schema 新增獨立的 `username` 欄位。
+>
+> ⚠️ **Neon 資料庫密碼已在對話紀錄中明文出現，請立刻到 Neon Console 執行 Reset Password，並同步更新 `.env.local` 與 Vercel 的 `DATABASE_URL`。**
 
 ### 後台功能
 

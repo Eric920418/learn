@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(pnpm info:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Bash(PGPASSWORD='npg_stxypLbGF1r8' psql:*)"
     ]
   }
 }
