@@ -3,6 +3,8 @@ import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getPublishedPosts } from "@/lib/queries/blog";
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogPage() {
   const posts = await getPublishedPosts();
 

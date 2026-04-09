@@ -2,6 +2,8 @@ import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getPhilosophyItems } from "@/lib/queries/philosophy";
 
+export const dynamic = "force-dynamic";
+
 export default async function PhilosophyPage() {
   const items = await getPhilosophyItems();
   const goals = items.filter((i) => i.category === "goal");

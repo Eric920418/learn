@@ -5,6 +5,8 @@ import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getAlbumWithPhotos } from "@/lib/queries/gallery";
 
+export const dynamic = "force-dynamic";
+
 export default async function AlbumDetailPage({
   params,
 }: {

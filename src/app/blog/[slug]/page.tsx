@@ -3,6 +3,8 @@ import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getPostBySlug } from "@/lib/queries/blog";
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);

@@ -4,6 +4,8 @@ import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getPublishedAlbumsWithCover } from "@/lib/queries/gallery";
 
+export const dynamic = "force-dynamic";
+
 export default async function GalleryPage() {
   const albums = await getPublishedAlbumsWithCover();
 

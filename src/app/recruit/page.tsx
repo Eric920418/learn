@@ -3,6 +3,8 @@ import Footer from "@/components/ui/Footer";
 import { getFocusItems } from "@/lib/queries/recruit";
 import { getPageSections } from "@/lib/queries/settings";
 
+export const dynamic = "force-dynamic";
+
 export default async function RecruitPage() {
   const [focusItemsList, sections] = await Promise.all([
     getFocusItems(),

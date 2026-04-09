@@ -5,6 +5,8 @@ import { getBoardMembers } from "@/lib/queries/board-members";
 import { getAims, getDirectors, getPurposes } from "@/lib/queries/about";
 import { getPageSections } from "@/lib/queries/settings";
 
+export const dynamic = "force-dynamic";
+
 export default async function AboutPage() {
   const [boardMembersList, aims, directors, purposes, sections] = await Promise.all([
     getBoardMembers(),
