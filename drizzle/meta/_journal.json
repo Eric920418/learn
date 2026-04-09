@@ -15,6 +15,13 @@
       "when": 1774871147684,
       "tag": "0001_loving_victor_mancha",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775733497900,
+      "tag": "0002_fast_domino",
+      "breakpoints": true
     }
   ]
 }

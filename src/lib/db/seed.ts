@@ -26,17 +26,18 @@ async function seed() {
   console.log("開始 Seed...");
 
   // 1. Admin 帳號
-  const hashedPassword = await bcrypt.hash("admin123", 12);
+  const hashedPassword = await bcrypt.hash("00662829", 12);
   await db
     .insert(users)
     .values({
       name: "Admin",
-      email: "admin@tiscllb.org",
+      username: "TIS00662829",
+      email: null,
       password: hashedPassword,
       role: "admin",
     })
-    .onConflictDoNothing();
-  console.log("✓ Admin 帳號建立完成 (admin@tiscllb.org / admin123)");
+    .onConflictDoNothing({ target: users.username });
+  console.log("✓ Admin 帳號建立完成 (TIS00662829 / 00662829)");
 
   // 2. 全站設定
   const existingSettings = await db.select().from(siteSettings).limit(1);
@@ -273,7 +274,7 @@ async function seed() {
   console.log("✓ Page Sections");
 
   console.log("\n✅ Seed 完成！");
-  console.log("Admin 帳號: admin@tiscllb.org / admin123");
+  console.log("Admin 帳號: TIS00662829 / 00662829");
   process.exit(0);
 }
 

@@ -36,11 +36,14 @@ BLOB_READ_WRITE_TOKEN=xxx             # Vercel Blob token (部署時需要)
 ### 3. 資料庫設定
 
 ```bash
-pnpm db:generate   # 生成遷移檔案
-pnpm db:push       # 推送 schema 到資料庫
+pnpm db:generate   # 生成遷移檔案（drizzle/000X_*.sql）
+pnpm db:migrate    # 套用未執行的 migration（含資料回填 SQL，正規流程）
+pnpm db:push       # 直接推 schema diff 到 DB（略過 .sql 檔，僅限純 schema 變更）
 pnpm db:seed       # 填入初始資料（含 admin 帳號）
 pnpm db:studio     # 開啟 Drizzle Studio（瀏覽資料庫）
 ```
+
+> schema 變更時請使用 `pnpm db:generate` 產生 migration，**手動檢查並補上資料回填 SQL**，再以 `pnpm db:migrate` 套用。`db:push` 會略過 `.sql` 檔所以無法執行資料回填，僅適用於 dev 階段的純 schema 變更。**禁用 `--accept-data-loss` flag**。
 
 ### 4. 啟動開發伺服器
 
@@ -59,9 +62,11 @@ pnpm dev
 - **帳號**: `TIS00662829`
 - **密碼**: `00662829`
 
-> ⚠️ 此帳號為臨時測試用，帳號字串塞在 `users.email` 欄位內（非真正 email 格式），登入頁 input 已改為 `type="text"` 以繞過瀏覽器 email 原生驗證。email 相關功能（寄信、驗證、忘記密碼）在此帳號下不可用。正式上線前請改回真正的 email、或為 schema 新增獨立的 `username` 欄位。
+> Admin 登入使用 `users.username` 欄位作為 key（migration `0002_fast_domino`）；`users.email` 欄位允許為 NULL，保留以供未來啟用 email 相關功能（密碼重設、通知等）。auth 邏輯見 `src/auth.ts`。
 >
-> ⚠️ **Neon 資料庫密碼已在對話紀錄中明文出現，請立刻到 Neon Console 執行 Reset Password，並同步更新 `.env.local` 與 Vercel 的 `DATABASE_URL`。**
+> ℹ️ Neon `neondb_owner` 密碼已於 2026-04-09 rotate，舊密碼已失效。新密碼已同步寫入 `.env.local` 與 Vercel 的 `DATABASE_URL`（Production + Preview）。**Production deployment 需重新部署才會套用新 env**，可執行 `vercel --prod` 或從 Vercel Dashboard 點 Redeploy。
+>
+> ⚠️ 新密碼目前仍在本次 Claude Code 對話紀錄與 shell history 中，建議日後透過 Neon Console 網頁手動再 rotate 一次，完全不經過 CLI/對話介面，才真正乾淨。
 
 ### 後台功能
 

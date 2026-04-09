@@ -10,7 +10,7 @@ export function AdminHeader() {
       <div />
       <div className="flex items-center gap-4">
         <span className="text-sm text-gray-600">
-          {session?.user?.email}
+          {session?.user?.name ?? "Admin"}
         </span>
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}

@@ -16,24 +16,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       name: "credentials",
       credentials: {
-        email: { label: "帳號", type: "text" },
+        username: { label: "帳號", type: "text" },
         password: { label: "密碼", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.username || !credentials?.password) {
           return null;
         }
 
-        const email = credentials.email as string;
+        const username = credentials.username as string;
         const password = credentials.password as string;
 
         const [user] = await db
           .select()
           .from(users)
-          .where(eq(users.email, email))
+          .where(eq(users.username, username))
           .limit(1);
 
-        if (!user || !user.password) {
+        if (!user || !user.password || !user.username) {
           return null;
         }
 
