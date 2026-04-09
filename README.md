@@ -75,8 +75,9 @@ pnpm dev
 | `/admin/recruit` | 招募會員頁面內容 |
 | `/admin/contact` | 聯絡我們頁面歡迎文字 |
 | `/admin/gallery` | 活動錦集管理（相簿 CRUD + 照片上傳管理） |
-| `/admin/blog` | Blog 文章/分類/標籤管理 |
 | `/admin/settings` | 全站設定（聯絡資訊、版權文字） |
+
+> Blog 功能（`/admin/blog`、`/blog`）程式碼與資料表保留，但 Sidebar 入口暫時隱藏，前台導覽列也未連結，需直接輸入網址才能進入。
 
 ### 內容架構
 
