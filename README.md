@@ -84,7 +84,7 @@ pnpm dev
 | `/admin/gallery` | 活動錦集管理（相簿 CRUD + 照片上傳管理） |
 | `/admin/settings` | 全站設定（聯絡資訊、版權文字） |
 
-> Blog 功能（`/admin/blog`、`/blog`）程式碼與資料表保留，但 Sidebar 入口暫時隱藏，前台導覽列也未連結，需直接輸入網址才能進入。
+> Blog 功能前後台程式碼已全數移除（routes / actions / queries / dashboard 卡片）。資料表（`posts`、`categories`、`tags`、`post_tags`）刻意保留在 DB 與 `src/lib/db/schema.ts`，避免 drizzle migration 產生 `DROP TABLE` 而違反 `--accept-data-loss` 禁令。未來若要復活只需重建 routes/actions/queries，資料完整無損。
 
 ### 內容架構
 
@@ -94,7 +94,6 @@ pnpm dev
 - **列表表**：倡導理念、組織成員、會員、活動、Aims、Directors、Purposes、Focus Items
 - **通用文字區塊**：page_sections（研討會文字、研發文字、領導力引言等）
 - **活動錦集**：相簿 (gallery_albums)、照片 (gallery_photos)
-- **Blog 系統**：文章、分類、標籤
 
 ## 專案結構
 
@@ -113,14 +112,12 @@ src/
 │   │   ├── recruit/                # 招募頁面內容
 │   │   ├── contact/                # 聯絡我們頁面管理
 │   │   ├── gallery/                 # 活動錦集（相簿 + 照片管理）
-│   │   ├── blog/                   # Blog 管理
 │   │   └── settings/               # 全站設定
 │   ├── api/
 │   │   ├── auth/[...nextauth]/     # NextAuth API
 │   │   └── upload/                 # 圖片上傳 API (Vercel Blob)
 │   ├── gallery/                    # 活動錦集前台
 │   ├── about/                      # 關於本會
-│   ├── blog/                       # Blog 前台
 │   ├── contact/                    # 聯絡我們
 │   ├── events/                     # 活動訊息
 │   ├── members/                    # 會員名單
@@ -169,8 +166,6 @@ src/
 | `/members` | 會員名單表格 |
 | `/recruit` | 招募會員 + 研討會 + 研發 |
 | `/contact` | 聯絡資訊 |
-| `/blog` | 文章列表 |
-| `/blog/[slug]` | 文章內頁 |
 
 ## 響應式設計 (RWD)
 
@@ -195,6 +190,6 @@ src/
 
 ### 渲染策略
 
-所有前台公開頁（`/`、`/about`、`/events`、`/gallery`、`/members`、`/philosophy`、`/recruit`、`/contact`、`/blog`、`/blog/[slug]`、`/gallery/[id]`）都標記了 `export const dynamic = "force-dynamic"`。
+所有前台公開頁（`/`、`/about`、`/events`、`/gallery`、`/members`、`/philosophy`、`/recruit`、`/contact`、`/gallery/[id]`）都標記了 `export const dynamic = "force-dynamic"`。
 
 > **為何不用 SSG？** Vercel build container 在 `iad1`（美東），Neon 在 `ap-southeast-1`（新加坡）。Build 階段若 SSG prerender，會跨太平洋打 Neon HTTP API，網路抖動或 cold start 隨時可能 `ETIMEDOUT` 讓整個 build 失敗。改為 `force-dynamic` 後，build 不打 DB，runtime 由 hkg1 function 連 Neon（亞洲區內）每次 request server-render，latency 約 30–50ms，CMS 內容更新立即生效。`/admin/*` 因為 layout 用 `auth()` 已自動為 dynamic，不需顯式設定。
