@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ALLOWED_IMAGE_TYPES, uploadFile, validateImageFile } from "@/lib/upload";
 
 interface MultiImageUploadProps {
   onUploaded: (urls: string[]) => Promise<{ error?: string }>;
@@ -16,12 +17,10 @@ export function MultiImageUpload({ onUploaded }: MultiImageUploadProps) {
     if (files.length === 0) return;
 
     for (const file of files) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError(`${file.name} 超過 5MB 限制`);
-        return;
-      }
-      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-        setError(`${file.name} 格式不支援，只接受 JPG、PNG、WebP`);
+      const validationError = validateImageFile(file);
+      if (validationError) {
+        setError(validationError);
+        e.target.value = "";
         return;
       }
     }
@@ -33,19 +32,7 @@ export function MultiImageUpload({ onUploaded }: MultiImageUploadProps) {
     try {
       for (let i = 0; i < files.length; i++) {
         setProgress(`上傳中 ${i + 1} / ${files.length}...`);
-        const formData = new FormData();
-        formData.append("file", files[i]);
-
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error || `上傳 ${files[i].name} 失敗`);
-        }
-        uploadedUrls.push(data.url);
+        uploadedUrls.push(await uploadFile(files[i]));
       }
 
       setProgress("儲存中...");
@@ -69,7 +56,7 @@ export function MultiImageUpload({ onUploaded }: MultiImageUploadProps) {
       </label>
       <input
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept={ALLOWED_IMAGE_TYPES.join(",")}
         multiple
         onChange={handleFilesChange}
         disabled={uploading}
@@ -78,7 +65,11 @@ export function MultiImageUpload({ onUploaded }: MultiImageUploadProps) {
       {uploading && (
         <p className="text-xs text-blue-600 mt-1">{progress}</p>
       )}
-      {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
+      {error && (
+        <p className="text-xs text-red-600 mt-1 break-all whitespace-pre-wrap">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

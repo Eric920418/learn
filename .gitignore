@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# 本地開發上傳的圖片（production 走 Vercel Blob，不進 repo）
+/public/uploads/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

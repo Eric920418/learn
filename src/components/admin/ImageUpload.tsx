@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ALLOWED_IMAGE_TYPES, uploadFile, validateImageFile } from "@/lib/upload";
 
 interface ImageUploadProps {
   name: string;
@@ -18,13 +19,9 @@ export function ImageUpload({ name, currentImage, label = "圖片" }: ImageUploa
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError("檔案大小不能超過 5MB");
-      return;
-    }
-
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      setError("只支援 JPG、PNG、WebP 格式");
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -33,21 +30,9 @@ export function ImageUpload({ name, currentImage, label = "圖片" }: ImageUploa
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "上傳失敗");
-      }
-
-      setUploadedUrl(data.url);
-      setPreview(data.url);
+      const url = await uploadFile(file);
+      setUploadedUrl(url);
+      setPreview(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "上傳失敗");
       setPreview(currentImage || null);
@@ -70,12 +55,16 @@ export function ImageUpload({ name, currentImage, label = "圖片" }: ImageUploa
         <div>
           <input
             type="file"
-            accept="image/jpeg,image/png,image/webp"
+            accept={ALLOWED_IMAGE_TYPES.join(",")}
             onChange={handleFileChange}
             className="text-sm"
           />
           {uploading && <p className="text-xs text-blue-600 mt-1">上傳中...</p>}
-          {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
+          {error && (
+            <p className="text-xs text-red-600 mt-1 break-all whitespace-pre-wrap">
+              {error}
+            </p>
+          )}
         </div>
       </div>
     </div>

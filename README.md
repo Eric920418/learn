@@ -188,6 +188,20 @@ src/
 - `AUTH_URL` — 正式網域 (例: https://tiscllb.org)
 - `BLOB_READ_WRITE_TOKEN` — Vercel Blob 儲存 token
 
+### 圖片上傳限制
+
+限制值集中定義在 `src/lib/upload.ts`，前端驗證、後端驗證、`accept` 屬性都從這裡取，不要在別處寫死。
+
+| 項目 | 值 |
+| --- | --- |
+| 格式 | JPG、PNG、WebP（不支援影片） |
+| 大小 | 4MB |
+| 權限 | 僅 `role === "admin"` |
+
+> **為何是 4MB 不是 5MB？** Vercel Functions 的 request body 硬上限是 4.5MB，超過會在平台層直接回 413 HTML，根本進不到 route handler。4MB 留給 multipart 編碼的 overhead。若日後需要支援大檔或影片，得改用 Vercel Blob 的 client upload（瀏覽器直傳 Blob，不經過 function），而不是調高這個數字。
+
+部署環境（`process.env.VERCEL` 存在）若沒有 `BLOB_READ_WRITE_TOKEN`，上傳 API 會直接回錯誤而**不會**退回寫本地檔案系統 —— Vercel 的 filesystem 唯讀且每次部署重建，退回只會產生誤導性的 fs 錯誤。本地開發沒有 token 時才會存到 `public/uploads/`（已 gitignore）。
+
 ### 渲染策略
 
 所有前台公開頁（`/`、`/about`、`/events`、`/gallery`、`/members`、`/philosophy`、`/recruit`、`/contact`、`/gallery/[id]`）都標記了 `export const dynamic = "force-dynamic"`。
