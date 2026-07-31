@@ -6,8 +6,9 @@ import {
   uuid,
   varchar,
   integer,
+  check,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 // ============================================
 // NextAuth 所需的表
@@ -234,6 +235,49 @@ export const galleryPhotos = pgTable("gallery_photos", {
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
+
+// ============================================
+// 影片（Videos）
+// ============================================
+
+export type VideoSource = "upload" | "youtube";
+
+// source 決定 videoUrl / youtubeId 哪一個有值，兩者互斥。
+//
+// 這是全專案唯一有 CHECK constraint 的表，理由：videos 是全新的表，加約束
+// 沒有任何既有資料風險；而「三選一互斥」如果只靠 server action 把關，一旦
+// 有人改壞驗證邏輯，壞掉的方式是前台 <video src=""> 靜默不播——沒有人會回報。
+// action 裡仍然要先驗（見 src/lib/actions/videos.ts），CHECK 只是最後一道，
+// 不是第一道，否則管理員會看到 Postgres 的英文 23514 錯誤原文。
+//
+// published 預設 false：本專案的 .env.local 與 Vercel Production 共用同一個
+// DATABASE_URL（見 README），本機測試寫進去的資料會直接出現在正式站上。
+// 透過後台表單建立時 checkbox 仍預設勾選，所以管理員的操作體感不變；
+// 這個預設值保護的是 seed script、手動 SQL 之類不經過表單的寫入路徑。
+export const videos = pgTable(
+  "videos",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: text("title").notNull(),
+    description: text("description"),
+    source: text("source").$type<VideoSource>().notNull().default("upload"),
+    videoUrl: text("video_url"), // source=upload：Vercel Blob URL
+    youtubeId: text("youtube_id"), // source=youtube：11 字元影片 ID
+    posterImage: text("poster_image"),
+    eventDate: text("event_date"),
+    published: boolean("published").default(false).notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  },
+  (t) => [
+    check(
+      "videos_source_payload_check",
+      sql`(${t.source} = 'upload' AND ${t.videoUrl} IS NOT NULL AND ${t.youtubeId} IS NULL)
+       OR (${t.source} = 'youtube' AND ${t.youtubeId} IS NOT NULL AND ${t.videoUrl} IS NULL)`
+    ),
+  ]
+);
 
 export const pageSections = pgTable("page_sections", {
   id: uuid("id").defaultRandom().primaryKey(),

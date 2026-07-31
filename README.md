@@ -11,7 +11,7 @@
 | 資料庫 | Neon PostgreSQL (亞洲區域) |
 | ORM | Drizzle ORM |
 | 認證 | NextAuth.js v5 (Credentials + JWT) |
-| 圖片儲存 | Vercel Blob |
+| 媒體儲存 | Vercel Blob（圖片走 server proxy，影片走 client 直傳） |
 | 部署 | Vercel (hkg1) |
 
 ## 本地開發
@@ -82,6 +82,7 @@ pnpm dev
 | `/admin/recruit` | 招募會員頁面內容 |
 | `/admin/contact` | 聯絡我們頁面歡迎文字 |
 | `/admin/gallery` | 活動錦集管理（相簿 CRUD + 照片上傳管理） |
+| `/admin/videos` | 影片管理（自架上傳 / YouTube 連結 CRUD） |
 | `/admin/settings` | 全站設定（聯絡資訊、版權文字） |
 
 > Blog 功能前後台程式碼已全數移除（routes / actions / queries / dashboard 卡片）。資料表（`posts`、`categories`、`tags`、`post_tags`）刻意保留在 DB 與 `src/lib/db/schema.ts`，避免 drizzle migration 產生 `DROP TABLE` 而違反 `--accept-data-loss` 禁令。未來若要復活只需重建 routes/actions/queries，資料完整無損。
@@ -94,6 +95,7 @@ pnpm dev
 - **列表表**：倡導理念、組織成員、會員、活動、Aims、Directors、Purposes、Focus Items
 - **通用文字區塊**：page_sections（研討會文字、研發文字、領導力引言等）
 - **活動錦集**：相簿 (gallery_albums)、照片 (gallery_photos)
+- **影片**：videos（與相簿完全獨立，自架上傳與 YouTube 嵌入兩種來源）
 
 ## 專案結構
 
@@ -112,11 +114,14 @@ src/
 │   │   ├── recruit/                # 招募頁面內容
 │   │   ├── contact/                # 聯絡我們頁面管理
 │   │   ├── gallery/                 # 活動錦集（相簿 + 照片管理）
+│   │   ├── videos/                 # 影片管理
 │   │   └── settings/               # 全站設定
 │   ├── api/
 │   │   ├── auth/[...nextauth]/     # NextAuth API
-│   │   └── upload/                 # 圖片上傳 API (Vercel Blob)
+│   │   └── upload/                 # 圖片上傳 API（server proxy → Blob）
+│   │       └── video/              # 影片上傳授權 API（簽發 client token，檔案不經過此處）
 │   ├── gallery/                    # 活動錦集前台
+│   ├── videos/                     # 影片前台
 │   ├── about/                      # 關於本會
 │   ├── contact/                    # 聯絡我們
 │   ├── events/                     # 活動訊息
@@ -132,6 +137,7 @@ src/
 │   │   ├── BilingualField.tsx
 │   │   ├── ImageUpload.tsx
 │   │   ├── MultiImageUpload.tsx
+│   │   ├── VideoUpload.tsx         # 影片直傳 Blob（進度條 + 可播性探測）
 │   │   ├── PhotoManager.tsx
 │   │   ├── SubmitButton.tsx
 │   │   ├── DeleteButton.tsx
@@ -139,12 +145,16 @@ src/
 │   └── ui/                         # 前台 UI 組件
 │       ├── Header.tsx
 │       ├── Footer.tsx
-│       └── EventCard.tsx
+│       ├── EventCard.tsx
+│       ├── EventInfoModal.tsx
+│       ├── VideoGallery.tsx        # 影片 grid + lightbox
+│       └── useModalBehavior.ts     # Esc 關閉 + 背景捲動鎖（含 iOS workaround）
 ├── lib/
 │   ├── actions/                    # Server Actions (CRUD)
 │   ├── queries/                    # 資料查詢函數
+│   ├── upload.ts                   # 圖片/影片上傳限制與驗證（前後端共用）
 │   └── db/
-│       ├── schema.ts               # Drizzle ORM schema (21 張表)
+│       ├── schema.ts               # Drizzle ORM schema (22 張表)
 │       ├── index.ts                 # DB 連線
 │       └── seed.ts                  # 初始資料
 ├── types/index.ts                   # TypeScript 類型擴展
@@ -163,6 +173,7 @@ src/
 | `/events` | 活動列表 |
 | `/gallery` | 活動錦集（相簿列表） |
 | `/gallery/[id]` | 活動相簿詳情（瀑布流照片） |
+| `/videos` | 影片（封面 grid，點擊開 lightbox 播放） |
 | `/members` | 會員名單表格 |
 | `/recruit` | 招募會員 + 研討會 + 研發 |
 | `/contact` | 聯絡資訊 |
@@ -188,19 +199,66 @@ src/
 - `AUTH_URL` — 正式網域 (例: https://tiscllb.org)
 - `BLOB_READ_WRITE_TOKEN` — Vercel Blob 儲存 token
 
-### 圖片上傳限制
+### 媒體上傳限制
 
-限制值集中定義在 `src/lib/upload.ts`，前端驗證、後端驗證、`accept` 屬性都從這裡取，不要在別處寫死。
+所有限制值集中定義在 `src/lib/upload.ts`，前端驗證、後端驗證、`accept` 屬性都從這裡取，不要在別處寫死。
 
-| 項目 | 值 |
+| | 圖片 | 影片 |
+| --- | --- | --- |
+| 格式 | JPG、PNG、WebP | MP4、WebM（**H.264 + AAC**） |
+| 大小 | 4MB | 100MB |
+| 路徑 | `瀏覽器 → /api/upload → Blob` | `瀏覽器 → Blob`（直傳） |
+| 權限 | 僅 `role === "admin"` | 僅 `role === "admin"` |
+
+**為何圖片是 4MB 不是 5MB？** Vercel Functions 的 request body 硬上限是 4.5MB，超過會在平台層直接回 413 HTML，根本進不到 route handler。4MB 留給 multipart 編碼的 overhead。
+
+**為何影片不走同一條路？** 100MB 穿不過那個 4.5MB 限制。影片改用 Vercel Blob 的 client upload：`/api/upload/video` 只簽發一張受限的 client token（`allowedContentTypes` + `maximumSizeInBytes` 會被 HMAC 簽章編進 token，由 Blob 服務端強制執行，是真的伺服器端驗證），檔案由瀏覽器直傳，完全不經過我們的 function。
+
+**為何不用 `onUploadCompleted` 寫 DB？** 那是 Blob 服務反向呼叫我們的 URL，localhost 收不到。邏輯放那裡等於本地永遠測不出來、上線才爆。改由前端拿到 URL 後送表單，`src/lib/actions/videos.ts` 寫入。
+
+**為何擋 `.mov`？** iPhone 預設錄的是 HEVC 編碼的 `.mov`，管理員在 Mac Safari 上測會正常播放，但 Chrome / Firefox 訪客完全播不出來，而且不會有人回報。上傳時直接擋下並要求匯出 MP4。
+注意這只擋掉一半：iPhone「高效率」設定匯出的 **`.mp4` 容器也可能裝 HEVC**，`file.type` 是 `video/mp4` 會通過白名單。`VideoUpload` 因此會在上傳前用瀏覽器實際解一次影片（`videoWidth > 0`）當第二道防線，但那只證明「上傳者這台瀏覽器解得開」。**請在 iPhone 的「設定 → 相機 → 格式」選「最相容」，或匯出時選 H.264。**
+
+#### ⚠️ 本機開發會寫進正式環境
+
+`.env.local` 的 `DATABASE_URL` 與 Vercel Production 是**同一個 Neon 資料庫**（見上方密碼 rotate 說明），而影片的 client upload **沒有本地檔案系統備援**（那是繞過 function 的唯一方式），所以也是寫進**正式 Blob store**。
+
+也就是說：在 localhost 測試上傳並儲存的影片，會立刻出現在正式站上。
+
+緩解措施：
+- `videos.published` 的 DB 預設值是 `false`（保護 seed script、手動 SQL 等不經過表單的寫入路徑；透過後台表單建立時 checkbox 仍預設勾選）
+- 本機上傳的檔案會加上 `videos/dev/` 路徑前綴，可用 `vercel blob list --prefix videos/dev/` 一次找出來清掉
+- 測試完請從後台刪除，`deleteVideo` 會一併清掉 Blob 檔案
+
+#### Blob 檔案生命週期
+
+影片是「檔案先進 Blob、DB row 後寫」，所以有孤兒檔案的風險。目前的處理：
+
+| 情境 | 處理 |
 | --- | --- |
-| 格式 | JPG、PNG、WebP（不支援影片） |
-| 大小 | 4MB |
-| 權限 | 僅 `role === "admin"` |
+| 刪除影片 | `deleteVideo` 一併 `del()` 影片與封面圖；失敗回 warning 不吞掉 |
+| 換掉影片/封面後儲存 | `updateVideo` 刪掉被替換的舊檔案 |
+| 上傳後又換一支 | `discardVideoBlob` 清掉前一顆 |
+| 上傳後直接關掉分頁 | **無法處理**，會留下孤兒檔案。需要時用 `vercel blob list --prefix videos/` 比對 DB 手動清 |
 
-> **為何是 4MB 不是 5MB？** Vercel Functions 的 request body 硬上限是 4.5MB，超過會在平台層直接回 413 HTML，根本進不到 route handler。4MB 留給 multipart 編碼的 overhead。若日後需要支援大檔或影片，得改用 Vercel Blob 的 client upload（瀏覽器直傳 Blob，不經過 function），而不是調高這個數字。
+> **待辦**：`deletePhoto`（`src/lib/actions/gallery.ts`）刪除相簿照片時**沒有**清除 Blob 檔案，是既有的 leak。因為照片只有 4MB 影響小，但相簿數量多了仍會累積。
 
-部署環境（`process.env.VERCEL` 存在）若沒有 `BLOB_READ_WRITE_TOKEN`，上傳 API 會直接回錯誤而**不會**退回寫本地檔案系統 —— Vercel 的 filesystem 唯讀且每次部署重建，退回只會產生誤導性的 fs 錯誤。本地開發沒有 token 時才會存到 `public/uploads/`（已 gitignore）。
+#### 流量成本
+
+Vercel Blob 按 Data Transfer 計費。一支 100MB 的自架影片被觀看 1000 次約產生 100GB 出流量（約 $5），而且 Blob 只是檔案儲存 —— 沒有轉檔、沒有自適應碼率，手機在慢速網路上就是硬啃 100MB。
+
+**長片或高流量的影片請用 YouTube 來源**（後台表單可切換），那條路零儲存、零流量成本，且自動適應網速。自架適合短片、或不想出現 YouTube 品牌與推薦影片的場合。
+
+> `public` 存取的 Blob URL 是公開的，`published: false` 只是讓它不出現在頁面上，拿到 URL 的人仍然存取得到。相簿照片也是同樣情況，只是 100MB 影片被外連的代價高很多。
+
+#### 缺 token 的行為
+
+| 環境 | 圖片 | 影片 |
+| --- | --- | --- |
+| 本機（無 token） | 存到 `public/uploads/`（已 gitignore） | **直接失敗**並提示缺設定 —— 沒有備援路徑 |
+| Vercel（無 token） | 直接回錯誤，不退回檔案系統（唯讀且每次部署重建） | 直接失敗並提示缺設定 |
+
+> `@vercel/blob` 的 `upload()` 在拿不到 token 時，會把我們回的 JSON 錯誤內容整個丟掉，一律換成英文的 `Failed to retrieve the client token`（`client.js:238`）。所以 `/api/upload/video` 另外提供一支 `GET`，前端在失敗後會再打一次，才問得到真正的原因是「登入過期」還是「伺服器沒設 token」。
 
 ### 渲染策略
 

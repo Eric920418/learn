@@ -22,6 +22,13 @@
       "when": 1775733497900,
       "tag": "0002_fast_domino",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785508332364,
+      "tag": "0003_harsh_archangel",
+      "breakpoints": true
     }
   ]
 }

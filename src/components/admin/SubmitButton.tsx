@@ -2,13 +2,19 @@
 
 import { useFormStatus } from "react-dom";
 
-export function SubmitButton({ label = "儲存" }: { label?: string }) {
+export function SubmitButton({
+  label = "儲存",
+  disabled = false,
+}: {
+  label?: string;
+  disabled?: boolean;
+}) {
   const { pending } = useFormStatus();
 
   return (
     <button
       type="submit"
-      disabled={pending}
+      disabled={pending || disabled}
       className="px-6 py-2 text-white rounded-md font-medium text-sm disabled:opacity-50"
       style={{ backgroundColor: "var(--primary-navy)" }}
     >

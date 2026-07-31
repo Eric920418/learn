@@ -9,6 +9,7 @@ const navItems = [
   { href: "/admin/philosophy", label: "倡導理念", icon: "💡" },
   { href: "/admin/events", label: "活動管理", icon: "📅" },
   { href: "/admin/gallery", label: "活動錦集", icon: "🖼️" },
+  { href: "/admin/videos", label: "影片管理", icon: "🎬" },
   { href: "/admin/board-members", label: "組織成員", icon: "👥" },
   { href: "/admin/members", label: "會員名單", icon: "📋" },
   { href: "/admin/about", label: "關於本會", icon: "ℹ️" },

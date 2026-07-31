@@ -2,55 +2,22 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useModalBehavior } from "./useModalBehavior";
 
 export default function EventInfoModal({ info, titleCn }: { info: string; titleCn: string }) {
   const [open, setOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
 
-  // Esc 關閉
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
-
-  // 鎖住背景滾動：用 body position: fixed 而非 overflow: hidden，
-  // 因為 iOS Safari 會忽略 body 的 overflow: hidden，背景照樣能滑。
-  // 代價是必須自己記住並還原 scrollY。
-  useEffect(() => {
-    if (!open) return;
-    const scrollY = window.scrollY;
-    const { style } = document.body;
-    const prev = {
-      position: style.position,
-      top: style.top,
-      left: style.left,
-      right: style.right,
-      overflowY: style.overflowY,
-    };
-
-    style.position = "fixed";
-    style.top = `-${scrollY}px`;
-    style.left = "0";
-    style.right = "0";
-    // body 變 fixed 後文件高度歸零、捲軸消失會造成版面橫向跳動，強制保留捲軸槽
-    style.overflowY = "scroll";
-
-    return () => {
-      Object.assign(style, prev);
-      window.scrollTo(0, scrollY);
-    };
-  }, [open]);
+  // Esc 關閉 + 鎖住背景滾動（含 iOS Safari 的 position:fixed workaround）
+  useModalBehavior(open, () => setOpen(false));
 
   // 開啟時把焦點移進 dialog，鍵盤與螢幕閱讀器才不會留在背景
   useEffect(() => {
     if (open) closeButtonRef.current?.focus();
   }, [open]);
 
+  // 早退必須留在所有 hook 之後——移到上面會讓 info 為空字串時 hook 數量不一致
   if (!info) return null;
 
   return (
