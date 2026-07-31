@@ -196,8 +196,23 @@ src/
 
 - `DATABASE_URL` — Neon PostgreSQL 連線字串
 - `AUTH_SECRET` — NextAuth 密鑰
-- `AUTH_URL` — 正式網域 (例: https://tiscllb.org)
+- `AUTH_URL` — 正式網域 (https://www.tiscllb.org.tw)
 - `BLOB_READ_WRITE_TOKEN` — Vercel Blob 儲存 token
+
+### 正式網址
+
+驗證線上狀態時請用 `https://www.tiscllb.org.tw`。網域是 `.org.tw` 不是 `.org`
+—— 後者不存在、DNS 解析不到，用錯會拿到「連不上」而誤以為站台掛了。
+
+Vercel 專案 `learn` 綁定的網域：
+
+| 網址 | 用途 |
+| --- | --- |
+| `www.tiscllb.org.tw` | 正式站（驗證用這個） |
+| `tiscllb.org.tw` | 同上 |
+| `learn-git-main-erics-projects-57e51613.vercel.app` | main 分支別名 |
+
+部署由 push 到 `main` 自動觸發，約 30 秒完成。
 
 ### 媒體上傳限制
 
