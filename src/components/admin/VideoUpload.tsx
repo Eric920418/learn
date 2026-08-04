@@ -15,7 +15,7 @@ import {
   VIDEO_BLOB_PREFIX,
   validateVideoFile,
 } from "@/lib/upload";
-import { discardVideoBlob } from "@/lib/actions/videos";
+import { discardVideoBlob } from "@/lib/actions/gallery";
 
 interface VideoUploadProps {
   name: string;

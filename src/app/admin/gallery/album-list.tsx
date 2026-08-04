@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 
 interface Album {
@@ -16,10 +17,25 @@ export function AlbumListClient({
   deleteAlbum,
 }: {
   albums: Album[];
-  deleteAlbum: (id: string) => Promise<{ error?: string }>;
+  deleteAlbum: (id: string) => Promise<{ error?: string; warning?: string }>;
 }) {
+  // 刪除相簿會連帶刪掉裡面所有照片與影片的 Blob 檔案。一本有幾支影片的相簿
+  // 就是幾百 MB，清不掉一定要講出來——而且那一列刪完就消失了，訊息得掛在列表層。
+  const [warning, setWarning] = useState("");
+
+  async function handleDelete(id: string) {
+    const result = await deleteAlbum(id);
+    if (result?.warning) setWarning(result.warning);
+    return result;
+  }
+
   return (
     <div className="space-y-3">
+      {warning && (
+        <div className="rounded border border-amber-200 bg-amber-50 p-3 text-sm whitespace-pre-wrap break-all text-amber-800">
+          {warning}
+        </div>
+      )}
       {albums.map((album) => (
         <div
           key={album.id}
@@ -54,8 +70,8 @@ export function AlbumListClient({
               管理照片
             </Link>
             <DeleteButton
-              onDelete={() => deleteAlbum(album.id)}
-              itemName="此相簿"
+              onDelete={() => handleDelete(album.id)}
+              itemName="此相簿（含裡面所有照片與影片）"
             />
           </div>
         </div>

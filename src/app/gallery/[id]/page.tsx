@@ -1,9 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getAlbumWithPhotos } from "@/lib/queries/gallery";
+import { AlbumMediaGrid } from "@/components/ui/AlbumMediaGrid";
 
 export const dynamic = "force-dynamic";
 
@@ -40,30 +40,12 @@ export default async function AlbumDetailPage({
         )}
       </section>
 
-      {/* Masonry Photo Grid */}
+      {/* Masonry Media Grid（照片 + 影片混合，依 sortOrder 排列） */}
       <section className="mx-auto max-w-7xl px-6 pb-16 md:px-12 md:pb-20 lg:px-16">
         {album.photos.length === 0 ? (
-          <p className="text-center text-gray-500">此相簿尚無照片</p>
+          <p className="text-center text-gray-500">此相簿尚無內容</p>
         ) : (
-          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
-            {album.photos.map((photo) => (
-              <div key={photo.id} className="mb-4 break-inside-avoid">
-                <Image
-                  src={photo.imageUrl}
-                  alt={photo.caption || album.title}
-                  width={800}
-                  height={600}
-                  className="w-full rounded-lg"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-                {photo.caption && (
-                  <p className="mt-2 text-center text-sm text-gray-600">
-                    {photo.caption}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
+          <AlbumMediaGrid items={album.photos} albumTitle={album.title} />
         )}
       </section>
 

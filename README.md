@@ -81,9 +81,11 @@ pnpm dev
 | `/admin/about` | 關於本會各區塊（Aims/Directors/Purposes/引言/學會價值圖片/組織成員介紹） |
 | `/admin/recruit` | 招募會員頁面內容 |
 | `/admin/contact` | 聯絡我們頁面歡迎文字 |
-| `/admin/gallery` | 活動錦集管理（相簿 CRUD + 照片上傳管理） |
-| `/admin/videos` | 影片管理（自架上傳 / YouTube 連結 CRUD） |
+| `/admin/gallery` | 活動錦集管理（相簿 CRUD + 相簿內照片與影片管理） |
 | `/admin/settings` | 全站設定（聯絡資訊、版權文字） |
+
+> 影片沒有獨立的後台入口。影片是相簿裡的一則媒體，在
+> `/admin/gallery/[id]/photos`（「管理照片與影片」）內新增與排序。
 
 > Blog 功能前後台程式碼已全數移除（routes / actions / queries / dashboard 卡片）。資料表（`posts`、`categories`、`tags`、`post_tags`）刻意保留在 DB 與 `src/lib/db/schema.ts`，避免 drizzle migration 產生 `DROP TABLE` 而違反 `--accept-data-loss` 禁令。未來若要復活只需重建 routes/actions/queries，資料完整無損。
 
@@ -94,8 +96,7 @@ pnpm dev
 - **單行表**：全站設定 (site_settings)、首頁 Hero (hero_content)
 - **列表表**：倡導理念、組織成員、會員、活動、Aims、Directors、Purposes、Focus Items
 - **通用文字區塊**：page_sections（研討會文字、研發文字、領導力引言等）
-- **活動錦集**：相簿 (gallery_albums)、照片 (gallery_photos)
-- **影片**：videos（與相簿完全獨立，自架上傳與 YouTube 嵌入兩種來源）
+- **活動錦集**：相簿 (gallery_albums)、相簿內媒體 (gallery_photos —— 同時存照片與影片，用 `media_type` 區分)
 
 ## 專案結構
 
@@ -113,8 +114,7 @@ src/
 │   │   ├── about/                  # About 各區塊
 │   │   ├── recruit/                # 招募頁面內容
 │   │   ├── contact/                # 聯絡我們頁面管理
-│   │   ├── gallery/                 # 活動錦集（相簿 + 照片管理）
-│   │   ├── videos/                 # 影片管理
+│   │   ├── gallery/                 # 活動錦集（相簿 + 相簿內照片與影片）
 │   │   └── settings/               # 全站設定
 │   ├── api/
 │   │   ├── auth/[...nextauth]/     # NextAuth API
@@ -138,7 +138,7 @@ src/
 │   │   ├── ImageUpload.tsx
 │   │   ├── MultiImageUpload.tsx
 │   │   ├── VideoUpload.tsx         # 影片直傳 Blob（進度條 + 可播性探測）
-│   │   ├── PhotoManager.tsx
+│   │   ├── MediaManager.tsx        # 相簿內照片與影片的管理介面
 │   │   ├── SubmitButton.tsx
 │   │   ├── DeleteButton.tsx
 │   │   └── ErrorDisplay.tsx
@@ -147,7 +147,9 @@ src/
 │       ├── Footer.tsx
 │       ├── EventCard.tsx
 │       ├── EventInfoModal.tsx
-│       ├── VideoGallery.tsx        # 影片 grid + lightbox
+│       ├── MediaLightbox.tsx       # 照片/影片共用的燈箱（左右切換）
+│       ├── AlbumMediaGrid.tsx      # 相簿內頁瀑布流（混合照片與影片）
+│       ├── VideoGallery.tsx        # /videos 彙整頁的卡片 grid
 │       └── useModalBehavior.ts     # Esc 關閉 + 背景捲動鎖（含 iOS workaround）
 ├── lib/
 │   ├── actions/                    # Server Actions (CRUD)
@@ -172,8 +174,8 @@ src/
 | `/philosophy` | 倡導理念（目標 + 願景） |
 | `/events` | 活動列表 |
 | `/gallery` | 活動錦集（相簿列表） |
-| `/gallery/[id]` | 活動相簿詳情（瀑布流照片） |
-| `/videos` | 影片（封面 grid，點擊開 lightbox 播放） |
+| `/gallery/[id]` | 活動相簿詳情（瀑布流，照片與影片混合，點擊開燈箱、可左右切換） |
+| `/videos` | 活動影片彙整（列出所有相簿裡的影片，可連回所屬相簿） |
 | `/members` | 會員名單表格 |
 | `/recruit` | 招募會員 + 研討會 + 研發 |
 | `/contact` | 聯絡資訊 |
@@ -214,6 +216,24 @@ Vercel 專案 `learn` 綁定的網域：
 
 部署由 push 到 `main` 自動觸發，約 30 秒完成。
 
+### 影片存在哪裡
+
+**影片沒有自己的資料表。** 它們是 `gallery_photos` 裡 `media_type = 'video'` 的列——跟照片同一張表、同一個相簿、同一組 `sort_order`，所以前台能把照片和影片依管理員指定的順序混合排列。
+
+`image_url` 對兩種型別的語意都是「這一則在相片牆上顯示的那張圖」：
+
+| `media_type` | `image_url` | `video_url` | `youtube_id` |
+| --- | --- | --- | --- |
+| `image` | 照片本身 | NULL | NULL |
+| `video`（自架） | 封面圖 | Blob URL | NULL |
+| `video`（YouTube） | 封面圖 | NULL | 11 字元 ID |
+
+這個設計讓既有的 `image_url NOT NULL` 不用動（migration 只有 `ADD COLUMN`），而且順帶讓「影片一定要有封面」變成資料庫層的保證——前台不會出現黑色方塊。三種組合由 CHECK constraint `gallery_photos_media_payload_check` 強制，影片必須「恰好」有一個來源。
+
+> `videos` 資料表**已停用**，沒有任何程式碼讀寫它。那是初版設計（影片獨立於相簿），
+> 後來客戶確認影片要放在活動相簿裡而改掉。保留不刪的理由與 `posts` / `categories`
+> 相同：避免 drizzle 產生 `DROP TABLE`。它是 0 筆資料的空表，不要往裡面寫東西。
+
 ### 媒體上傳限制
 
 所有限制值集中定義在 `src/lib/upload.ts`，前端驗證、後端驗證、`accept` 屬性都從這裡取，不要在別處寫死。
@@ -229,7 +249,7 @@ Vercel 專案 `learn` 綁定的網域：
 
 **為何影片不走同一條路？** 100MB 穿不過那個 4.5MB 限制。影片改用 Vercel Blob 的 client upload：`/api/upload/video` 只簽發一張受限的 client token（`allowedContentTypes` + `maximumSizeInBytes` 會被 HMAC 簽章編進 token，由 Blob 服務端強制執行，是真的伺服器端驗證），檔案由瀏覽器直傳，完全不經過我們的 function。
 
-**為何不用 `onUploadCompleted` 寫 DB？** 那是 Blob 服務反向呼叫我們的 URL，localhost 收不到。邏輯放那裡等於本地永遠測不出來、上線才爆。改由前端拿到 URL 後送表單，`src/lib/actions/videos.ts` 寫入。
+**為何不用 `onUploadCompleted` 寫 DB？** 那是 Blob 服務反向呼叫我們的 URL，localhost 收不到。邏輯放那裡等於本地永遠測不出來、上線才爆。改由前端拿到 URL 後送表單，`addVideoToAlbum`（`src/lib/actions/gallery.ts`）寫入。
 
 **為何擋 `.mov`？** iPhone 預設錄的是 HEVC 編碼的 `.mov`，管理員在 Mac Safari 上測會正常播放，但 Chrome / Firefox 訪客完全播不出來，而且不會有人回報。上傳時直接擋下並要求匯出 MP4。
 注意這只擋掉一半：iPhone「高效率」設定匯出的 **`.mp4` 容器也可能裝 HEVC**，`file.type` 是 `video/mp4` 會通過白名單。`VideoUpload` 因此會在上傳前用瀏覽器實際解一次影片（`videoWidth > 0`）當第二道防線，但那只證明「上傳者這台瀏覽器解得開」。**請在 iPhone 的「設定 → 相機 → 格式」選「最相容」，或匯出時選 H.264。**
@@ -241,7 +261,7 @@ Vercel 專案 `learn` 綁定的網域：
 也就是說：在 localhost 測試上傳並儲存的影片，會立刻出現在正式站上。
 
 緩解措施：
-- `videos.published` 的 DB 預設值是 `false`（保護 seed script、手動 SQL 等不經過表單的寫入路徑；透過後台表單建立時 checkbox 仍預設勾選）
+- 影片存在相簿裡，是否對外由**相簿的 `published`** 決定。想安全地試，就先開一個未發布的相簿，測完連相簿一起刪（會連帶清掉裡面所有 Blob 檔案）
 - 本機上傳的檔案會加上 `videos/dev/` 路徑前綴，可用 `vercel blob list --prefix videos/dev/` 一次找出來清掉
 - 測試完請從後台刪除，`deleteVideo` 會一併清掉 Blob 檔案
 
@@ -256,7 +276,11 @@ Vercel 專案 `learn` 綁定的網域：
 | 上傳後又換一支 | `discardVideoBlob` 清掉前一顆 |
 | 上傳後直接關掉分頁 | **無法處理**，會留下孤兒檔案。需要時用 `vercel blob list --prefix videos/` 比對 DB 手動清 |
 
-> **待辦**：`deletePhoto`（`src/lib/actions/gallery.ts`）刪除相簿照片時**沒有**清除 Blob 檔案，是既有的 leak。因為照片只有 4MB 影響小，但相簿數量多了仍會累積。
+| 刪除相簿 | `deleteAlbum` 清掉封面圖與相簿內所有照片、影片的 Blob 檔案 |
+
+> 影片與照片共用 `gallery_photos` 之後，`deletePhoto` 原本不清 Blob 的 leak
+> 就必須修掉了——同一支函式現在也會刪到 100MB 的影片。順帶把照片的 leak
+> 一起補上。
 
 #### 流量成本
 

@@ -79,7 +79,7 @@ export default async function AlbumEditPage({
             發布
           </label>
         </div>
-        <SubmitButton label={isNew ? "新增並管理照片" : "儲存"} />
+        <SubmitButton label={isNew ? "新增並管理內容" : "儲存"} />
       </form>
     </div>
   );

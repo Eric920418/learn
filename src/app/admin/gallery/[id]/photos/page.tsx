@@ -3,10 +3,11 @@ import { redirect } from "next/navigation";
 import { getAlbumWithPhotos } from "@/lib/queries/gallery";
 import {
   addPhotosToAlbum,
+  addVideoToAlbum,
   updatePhoto,
   deletePhoto,
 } from "@/lib/actions/gallery";
-import { PhotoManager } from "@/components/admin/PhotoManager";
+import { MediaManager } from "@/components/admin/MediaManager";
 
 export default async function PhotosManagePage({
   params,
@@ -29,7 +30,7 @@ export default async function PhotosManagePage({
             ← 返回相簿列表
           </Link>
           <h1 className="text-2xl font-bold mt-1">
-            管理照片 — {album.title}
+            管理照片與影片 — {album.title}
           </h1>
           <p className="text-sm text-gray-500">{album.eventDate}</p>
         </div>
@@ -42,10 +43,11 @@ export default async function PhotosManagePage({
         </Link>
       </div>
 
-      <PhotoManager
+      <MediaManager
         albumId={id}
-        photos={album.photos}
+        media={album.photos}
         addPhotos={addPhotosToAlbum}
+        addVideo={addVideoToAlbum}
         updatePhoto={updatePhoto}
         deletePhoto={deletePhoto}
       />

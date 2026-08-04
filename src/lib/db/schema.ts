@@ -225,21 +225,53 @@ export const galleryAlbums = pgTable("gallery_albums", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-export const galleryPhotos = pgTable("gallery_photos", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  albumId: uuid("album_id")
-    .notNull()
-    .references(() => galleryAlbums.id, { onDelete: "cascade" }),
-  imageUrl: text("image_url").notNull(),
-  caption: text("caption"),
-  sortOrder: integer("sort_order").notNull().default(0),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-});
+export type MediaType = "image" | "video";
+
+// 相簿內的一則媒體：照片或影片。表名維持 gallery_photos（改名等於破壞性
+// migration，不值得）。
+//
+// imageUrl 對兩種型別的語意是「這一則在相片牆上顯示的那張圖」：
+//   - mediaType=image：照片本身
+//   - mediaType=video：影片封面圖
+// 這樣既有的 NOT NULL 不用動，而且「影片一定要有封面」變成資料庫層的保證，
+// 前台不會出現黑色方塊。既有 92 列會吃 mediaType 的預設值 'image'，
+// 兩個新欄位為 NULL，完全符合下方的 CHECK。
+export const galleryPhotos = pgTable(
+  "gallery_photos",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    albumId: uuid("album_id")
+      .notNull()
+      .references(() => galleryAlbums.id, { onDelete: "cascade" }),
+    imageUrl: text("image_url").notNull(),
+    caption: text("caption"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    mediaType: text("media_type").$type<MediaType>().notNull().default("image"),
+    videoUrl: text("video_url"), // mediaType=video 且自架時的 Blob URL
+    youtubeId: text("youtube_id"), // mediaType=video 且嵌入時的 11 字元 ID
+  },
+  (t) => [
+    // 照片不得帶影片欄位；影片必須「恰好」有一個來源（XOR）。
+    // 少了這道，壞掉的方式是前台 <video src=""> 靜默不播，沒有人會回報。
+    check(
+      "gallery_photos_media_payload_check",
+      sql`(${t.mediaType} = 'image' AND ${t.videoUrl} IS NULL AND ${t.youtubeId} IS NULL)
+       OR (${t.mediaType} = 'video' AND ((${t.videoUrl} IS NOT NULL) <> (${t.youtubeId} IS NOT NULL)))`
+    ),
+  ]
+);
 
 // ============================================
 // 影片（Videos）
 // ============================================
 
+// ⚠️ 已停用，沒有任何程式碼讀寫這張表。
+//
+// 原本設計成與相簿並行的獨立影片區，後來客戶確認影片要放在活動相簿裡，
+// 影片改存 gallery_photos（mediaType='video'）。這張表保留不刪，理由與
+// posts / categories / tags 相同：避免 drizzle 產生 DROP TABLE。
+// 它目前是 0 筆資料的空表，不要往裡面寫東西。
 export type VideoSource = "upload" | "youtube";
 
 // source 決定 videoUrl / youtubeId 哪一個有值，兩者互斥。
