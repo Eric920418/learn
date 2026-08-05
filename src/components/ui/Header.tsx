@@ -9,7 +9,14 @@ const navLinks = [
   { label: "倡導理念", href: "/#philosophy" },
   { label: "活動訊息", href: "/events" },
   { label: "活動錦集", href: "/gallery" },
-  { label: "活動影片", href: "/videos" },
+  // 影片功能尚未驗收（還沒有人實際上傳／播放過一支影片），暫時隱藏入口。
+  // /videos 頁面本身仍可用直接網址開啟，方便驗收測試。
+  //
+  // ⚠️ 這是使用者明確要求的狀態，不要在做其他改動時順手恢復它。
+  // 要恢復必須同時做兩件事，缺一不可：
+  //   1. 取消下一行的註解
+  //   2. 移除 src/app/videos/page.tsx 裡的 noindex metadata
+  // { label: "活動影片", href: "/videos" },
   { label: "本會會員", href: "/members" },
   { label: "招募會員", href: "/recruit" },
   { label: "聯絡我們", href: "/contact" },
