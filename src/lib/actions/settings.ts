@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { siteSettings } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireAdmin } from "./auth-check";
 
 export async function updateSiteSettings(formData: FormData) {
@@ -27,8 +27,8 @@ export async function updateSiteSettings(formData: FormData) {
       await db.insert(siteSettings).values(data);
     }
 
-    revalidatePath("/");
-    revalidatePath("/contact");
+    updateTag("site-settings");
+    revalidatePath("/", "layout");
     return { success: true };
   } catch (error) {
     return { error: `更新失敗: ${error instanceof Error ? error.message : "未知錯誤"}` };

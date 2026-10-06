@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const PAGE_SIZE = 20;
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function MembersPage({
   searchParams,

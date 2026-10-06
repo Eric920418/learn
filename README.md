@@ -301,6 +301,10 @@ Vercel Blob 按 Data Transfer 計費。一支 100MB 的自架影片被觀看 100
 
 ### 渲染策略
 
-所有前台公開頁（`/`、`/about`、`/events`、`/gallery`、`/members`、`/philosophy`、`/recruit`、`/contact`、`/gallery/[id]`）都標記了 `export const dynamic = "force-dynamic"`。
+2026-10-06 降低 Neon 重複讀取：九種公開頁（含仍隱藏、noindex 的 `/videos`）改為一小時 ISR；`/gallery/[id]` 用空的 `generateStaticParams` 於首次訪問產生，保留新相簿與未發布／不存在相簿的 404。CMS 仍在成功寫入後呼叫 `revalidatePath`，不必等待一小時。相簿新增／刪除失效列表及所有相簿詳情路徑；新增、排序、刪除媒體同時失效列表，避免封面與詳情不同步。
 
-> **為何不用 SSG？** Vercel build container 在 `iad1`（美東），Neon 在 `ap-southeast-1`（新加坡）。Build 階段若 SSG prerender，會跨太平洋打 Neon HTTP API，網路抖動或 cold start 隨時可能 `ETIMEDOUT` 讓整個 build 失敗。改為 `force-dynamic` 後，build 不打 DB，runtime 由 hkg1 function 連 Neon（亞洲區內）每次 request server-render，latency 約 30–50ms，CMS 內容更新立即生效。`/admin/*` 因為 layout 用 `auth()` 已自動為 dynamic，不需顯式設定。
+`/members?page=N` 保留伺服器分頁與動態渲染，公開名單查詢按 page/pageSize 以 Next.js Data Cache 快取一小時；三種會員變更均在成功寫入後以 `updateTag("public-members")` 立即失效。共用公開聯絡設定也快取一小時，設定存檔立即失效 tag 與根 layout，涵蓋所有頁尾與後台設定頁。私人後台與認證沒有頁面快取。
+
+原先 force-dynamic 是為避免美東 build container 連新加坡 Neon 逾時；這次須待正式環境候選建置與公開內容檢查成功後才上線，若連線再次失敗不得發布失敗的建置。沒有更動資料庫結構或資料，也沒有新增快取服務或套件。
+
+驗證：`node --test tests/content-cache.test.cjs`（mock 資料庫，涵蓋會員新增／修改／刪除、全站設定、相簿新增與媒體排序；確認授權及寫入失敗不失效、成功才失效）、`pnpm exec tsc --noEmit`，以及正式環境建置與 HTTP 快取檢查。實際省幅須以較長的 Neon 用量窗口確認。

@@ -68,6 +68,7 @@ export async function createAlbum(
       .returning();
 
     revalidatePath("/gallery");
+    revalidatePath("/gallery/[id]", "page");
     revalidatePath("/admin/gallery");
     return { success: true, albumId: album.id };
   } catch (error) {
@@ -132,6 +133,7 @@ export async function deleteAlbum(id: string): Promise<GalleryActionResult> {
     await db.delete(galleryAlbums).where(eq(galleryAlbums.id, id));
 
     revalidatePath("/gallery");
+    revalidatePath("/gallery/[id]", "page");
     revalidatePath("/admin/gallery");
     revalidatePath("/videos");
 
@@ -193,6 +195,7 @@ export async function addPhotosToAlbum(
       }))
     );
 
+    revalidatePath("/gallery");
     revalidatePath(`/gallery/${albumId}`);
     revalidatePath(`/admin/gallery/${albumId}/photos`);
     return { success: true };
@@ -259,6 +262,7 @@ export async function addVideoToAlbum(
       sortOrder: await nextSortOrder(albumId),
     });
 
+    revalidatePath("/gallery");
     revalidatePath(`/gallery/${albumId}`);
     revalidatePath(`/admin/gallery/${albumId}/photos`);
     revalidatePath("/videos");
@@ -286,6 +290,7 @@ export async function updatePhoto(
       })
       .where(eq(galleryPhotos.id, id));
 
+    revalidatePath("/gallery");
     revalidatePath(`/gallery/${albumId}`);
     revalidatePath(`/admin/gallery/${albumId}/photos`);
     revalidatePath("/videos");
@@ -317,6 +322,7 @@ export async function deletePhoto(
     // （反過來先刪 Blob 的話，Blob 已不存在的列會永遠刪不掉。）
     await db.delete(galleryPhotos).where(eq(galleryPhotos.id, id));
 
+    revalidatePath("/gallery");
     revalidatePath(`/gallery/${albumId}`);
     revalidatePath(`/admin/gallery/${albumId}/photos`);
     revalidatePath("/videos");
