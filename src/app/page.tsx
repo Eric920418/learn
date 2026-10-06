@@ -6,7 +6,7 @@ import { getHeroContent } from "@/lib/queries/hero";
 import { getPhilosophyItems } from "@/lib/queries/philosophy";
 import { getPublishedEvents } from "@/lib/queries/events";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function Home() {
   const [hero, philosophyItems, events] = await Promise.all([

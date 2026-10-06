@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { associationMembers } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireAdmin } from "./auth-check";
 
 export async function createMember(formData: FormData) {
@@ -19,6 +19,7 @@ export async function createMember(formData: FormData) {
       sortOrder: Number(formData.get("sortOrder") || 0),
     });
 
+    updateTag("public-members");
     revalidatePath("/members");
     revalidatePath("/admin/members");
     return { success: true };
@@ -45,6 +46,7 @@ export async function updateMember(formData: FormData) {
       })
       .where(eq(associationMembers.id, id));
 
+    updateTag("public-members");
     revalidatePath("/members");
     revalidatePath("/admin/members");
     return { success: true };
@@ -58,6 +60,7 @@ export async function deleteMember(id: string) {
     await requireAdmin();
     await db.delete(associationMembers).where(eq(associationMembers.id, id));
 
+    updateTag("public-members");
     revalidatePath("/members");
     revalidatePath("/admin/members");
     return { success: true };

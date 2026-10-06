@@ -2,7 +2,7 @@ import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { getPhilosophyItems } from "@/lib/queries/philosophy";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function PhilosophyPage() {
   const items = await getPhilosophyItems();

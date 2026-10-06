@@ -4,7 +4,7 @@ import EventInfoModal from "@/components/ui/EventInfoModal";
 import { getPublishedEvents } from "@/lib/queries/events";
 import DownloadButton from "@/components/ui/DownloadButton";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function EventsPage() {
   const eventList = await getPublishedEvents();

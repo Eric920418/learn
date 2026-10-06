@@ -5,7 +5,11 @@ import Footer from "@/components/ui/Footer";
 import { getAlbumWithPhotos } from "@/lib/queries/gallery";
 import { AlbumMediaGrid } from "@/components/ui/AlbumMediaGrid";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+  return [];
+}
 
 export default async function AlbumDetailPage({
   params,

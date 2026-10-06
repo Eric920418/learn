@@ -4,9 +4,7 @@ import Footer from "@/components/ui/Footer";
 import { getPublishedVideoMedia } from "@/lib/queries/gallery";
 import { VideoGallery } from "@/components/ui/VideoGallery";
 
-// 與所有前台公開頁一致。理由見 README「渲染策略」：build container 在 iad1、
-// Neon 在新加坡，build 期 prerender 會跨太平洋打 DB 而 ETIMEDOUT。
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 // 暫時性：影片功能尚未驗收，導覽列入口已隱藏（見 Header.tsx）。這裡再擋一道
 // 搜尋引擎，避免空頁面被 Google 收錄成薄內容頁——被收錄後要移除比不被收錄
